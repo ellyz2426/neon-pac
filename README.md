@@ -1,54 +1,57 @@
-# Neon 2048 VR
+# Neon Pac VR
 
-A holodeck-style VR sliding tile puzzle built with [IWSDK](https://iwsdk.dev). Slide and merge tiles to reach 2048 in immersive 3D.
+A holodeck-style VR Pac-Man arcade built with [IWSDK](https://iwsdk.dev). Navigate the neon maze, eat pellets, dodge ghosts, and grab power pellets for a chance to strike back.
 
-**[Play Now](https://ellyz2426.github.io/neon-2048/)**
+**[Play Now](https://ellyz2426.github.io/neon-pac/)**
 
 ## Gameplay
 
-- Slide tiles in four directions on a grid
-- Matching tiles merge into one tile with double the value
-- After each move, a new tile (2 or 4) spawns in a random empty cell
-- Reach the 2048 tile to win — or keep going for a higher score
-- Game over when no moves remain
+- Navigate Pac-Man through the classic maze to eat all pellets
+- Avoid four ghosts with unique AI personalities:
+  - **Blinky** (red): Direct chase -- always targets your position
+  - **Pinky** (pink): Ambush -- targets 4 tiles ahead of you
+  - **Inky** (cyan): Flanking -- uses Blinky's position to flank
+  - **Clyde** (orange): Shy -- chases from afar, scatters when close
+- Grab power pellets to make ghosts vulnerable -- eat them for bonus points
+- Clear all pellets to advance to the next level (ghosts get faster!)
+- Ghost scoring: 200, 400, 800, 1600 for consecutive eats per power pellet
 
 ## Features
 
-- **6 Game Modes**: Classic, Time Attack, Endless, Speed Run, Zen, Daily Challenge
-- **3 Difficulty Levels**: Easy (4x4, always 2s), Normal (4x4, 90/10), Hard (5x5, 80/20)
-- **70+ Achievements** with unlock tracking — tile milestones, score goals, mode-specific, career stats
-- **5 Tile Skins**: Neon, Crimson, Ocean, Forest, Sunset
-- **3 Arena Themes**: Holodeck, Deep Space, Cyberpunk
-- **Undo System** with 20-move stack (disabled in Daily mode)
-- **Statistics Tracking**: games played, wins, best score, highest tile, total merges, win rate
-- **Daily Challenge**: seeded PRNG for consistent puzzles across all players
-- **Smooth Animations**: slide, merge pop, spawn grow with easing
-- **Particle Effects**: merge explosions with value-colored particles
-- **Procedural Audio**: slide, merge, spawn, win, game over, achievement sounds
+- **Classic Pac-Man maze** with authentic layout and ghost house
+- **4 Ghost AI personalities** with scatter/chase cycle
+- **Power pellet mechanics** with frightened mode
+- **Level progression** with increasing difficulty
+- **High score persistence** via localStorage
+- **4 PanelUI panels** -- HUD, menu, game over, pause (zero HTML DOM UI)
+- **Procedural audio** -- waka-waka, power pellet fanfare, ghost eat, death, level complete
+- **Neon aesthetic** -- glowing blue walls, edge highlighting, atmospheric fog
+- **Dual runtime** -- full VR + browser-first
 
 ## Controls
 
 ### VR (Quest / WebXR)
 | Input | Action |
 |-------|--------|
-| Thumbstick | Slide tiles |
-| B / Y | Pause |
-| Trigger | Select menu items |
+| Thumbstick | Move Pac-Man |
+| A | Start / Select |
+| B | Pause |
 
 ### Browser
 | Input | Action |
 |-------|--------|
-| Arrow Keys / WASD | Slide tiles |
-| Z | Undo last move |
-| ESC | Pause |
+| Arrow Keys / WASD | Move Pac-Man |
+| Space / Enter | Start / Select |
+| ESC / P | Pause |
 
 ## Tech
 
 - Built with [IWSDK](https://iwsdk.dev) 0.4.x (Immersive Web SDK)
-- 10 PanelUI spatial panels — zero HTML DOM UI
+- 4 PanelUI spatial panels -- zero HTML DOM UI
 - ECS architecture with GameSystem and UISystem
 - Dual runtime: full VR + browser-first
 - Procedural audio via Web Audio API
+- InstancedMesh walls for performance
 
 ## Development
 
