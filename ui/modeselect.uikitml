@@ -1,0 +1,94 @@
+<root>
+  <style>
+    .ms-root {
+      width: 420;
+      height: 480;
+      flex-direction: column;
+      align-items: center;
+      gap: 10;
+      padding: 20;
+      background-color: rgba(0, 5, 20, 0.94);
+      border-radius: 12;
+      border-width: 2;
+      border-color: #0066ff;
+    }
+    .ms-title {
+      font-size: 24;
+      color: #ffff00;
+      font-weight: bold;
+    }
+    .ms-subtitle {
+      font-size: 11;
+      color: #6688aa;
+    }
+    .mode-btn {
+      width: 360;
+      height: 48;
+      flex-direction: row;
+      align-items: center;
+      padding-left: 16;
+      padding-right: 16;
+      background-color: #0a1530;
+      border-radius: 8;
+      border-width: 1;
+      border-color: #0044aa;
+      hover-background-color: #0d2050;
+    }
+    .mode-label {
+      font-size: 15;
+      color: #ffffff;
+      font-weight: bold;
+      width: 120;
+    }
+    .mode-desc {
+      font-size: 10;
+      color: #6688aa;
+    }
+    .back-btn {
+      width: 120;
+      height: 36;
+      background-color: #222244;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #4444aa;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #333366;
+    }
+    .back-text {
+      font-size: 13;
+      color: #aaaacc;
+    }
+  </style>
+  <container class="ms-root">
+    <text class="ms-title">SELECT MODE</text>
+    <text class="ms-subtitle">Choose your challenge</text>
+    <container class="mode-btn" name="btn-classic">
+      <text class="mode-label">Classic</text>
+      <text class="mode-desc">The original experience</text>
+    </container>
+    <container class="mode-btn" name="btn-speed">
+      <text class="mode-label">Speed Run</text>
+      <text class="mode-desc">Everything moves faster!</text>
+    </container>
+    <container class="mode-btn" name="btn-dark">
+      <text class="mode-label">Dark Mode</text>
+      <text class="mode-desc">Limited visibility</text>
+    </container>
+    <container class="mode-btn" name="btn-survival">
+      <text class="mode-label">Survival</text>
+      <text class="mode-desc">One life. How far?</text>
+    </container>
+    <container class="mode-btn" name="btn-marathon">
+      <text class="mode-label">Marathon</text>
+      <text class="mode-desc">Ghosts get faster every level</text>
+    </container>
+    <container class="mode-btn" name="btn-zen">
+      <text class="mode-label">Zen</text>
+      <text class="mode-desc">No ghosts. Just dots.</text>
+    </container>
+    <container class="back-btn" name="btn-back-mode">
+      <text class="back-text">BACK</text>
+    </container>
+  </container>
+</root>

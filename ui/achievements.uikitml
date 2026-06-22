@@ -1,0 +1,194 @@
+<root>
+  <style>
+    .ach-root {
+      width: 440;
+      height: 500;
+      flex-direction: column;
+      align-items: center;
+      gap: 8;
+      padding: 16;
+      background-color: rgba(0, 5, 20, 0.94);
+      border-radius: 12;
+      border-width: 2;
+      border-color: #ffaa00;
+    }
+    .ach-title {
+      font-size: 22;
+      color: #ffaa00;
+      font-weight: bold;
+    }
+    .ach-count {
+      font-size: 12;
+      color: #888888;
+    }
+    .ach-list {
+      width: 400;
+      flex-direction: column;
+      gap: 4;
+    }
+    .ach-row {
+      width: 400;
+      height: 42;
+      flex-direction: row;
+      align-items: center;
+      padding-left: 10;
+      padding-right: 10;
+      background-color: #0a1020;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #333355;
+    }
+    .ach-row-unlocked {
+      width: 400;
+      height: 42;
+      flex-direction: row;
+      align-items: center;
+      padding-left: 10;
+      padding-right: 10;
+      background-color: #1a1800;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #ffaa00;
+    }
+    .ach-icon {
+      font-size: 14;
+      color: #ffaa00;
+      width: 40;
+    }
+    .ach-info {
+      flex-direction: column;
+      gap: 1;
+    }
+    .ach-name {
+      font-size: 12;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    .ach-desc {
+      font-size: 9;
+      color: #888888;
+    }
+    .ach-locked-name {
+      font-size: 12;
+      color: #555555;
+    }
+    .ach-locked-desc {
+      font-size: 9;
+      color: #444444;
+    }
+    .nav-row {
+      width: 400;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-btn {
+      width: 80;
+      height: 30;
+      background-color: #1a1a30;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #444466;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #2a2a50;
+    }
+    .nav-text {
+      font-size: 12;
+      color: #aaaacc;
+    }
+    .page-text {
+      font-size: 12;
+      color: #666688;
+    }
+    .close-btn {
+      width: 100;
+      height: 32;
+      background-color: #222244;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #4444aa;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #333366;
+    }
+    .close-text {
+      font-size: 13;
+      color: #aaaacc;
+    }
+  </style>
+  <container class="ach-root">
+    <text class="ach-title">ACHIEVEMENTS</text>
+    <text class="ach-count" name="ach-counter">0 / 0</text>
+    <container class="ach-list">
+      <container class="ach-row" name="ach-0">
+        <text class="ach-icon" name="ach-icon-0">?</text>
+        <container class="ach-info">
+          <text class="ach-name" name="ach-name-0">---</text>
+          <text class="ach-desc" name="ach-desc-0">---</text>
+        </container>
+      </container>
+      <container class="ach-row" name="ach-1">
+        <text class="ach-icon" name="ach-icon-1">?</text>
+        <container class="ach-info">
+          <text class="ach-name" name="ach-name-1">---</text>
+          <text class="ach-desc" name="ach-desc-1">---</text>
+        </container>
+      </container>
+      <container class="ach-row" name="ach-2">
+        <text class="ach-icon" name="ach-icon-2">?</text>
+        <container class="ach-info">
+          <text class="ach-name" name="ach-name-2">---</text>
+          <text class="ach-desc" name="ach-desc-2">---</text>
+        </container>
+      </container>
+      <container class="ach-row" name="ach-3">
+        <text class="ach-icon" name="ach-icon-3">?</text>
+        <container class="ach-info">
+          <text class="ach-name" name="ach-name-3">---</text>
+          <text class="ach-desc" name="ach-desc-3">---</text>
+        </container>
+      </container>
+      <container class="ach-row" name="ach-4">
+        <text class="ach-icon" name="ach-icon-4">?</text>
+        <container class="ach-info">
+          <text class="ach-name" name="ach-name-4">---</text>
+          <text class="ach-desc" name="ach-desc-4">---</text>
+        </container>
+      </container>
+      <container class="ach-row" name="ach-5">
+        <text class="ach-icon" name="ach-icon-5">?</text>
+        <container class="ach-info">
+          <text class="ach-name" name="ach-name-5">---</text>
+          <text class="ach-desc" name="ach-desc-5">---</text>
+        </container>
+      </container>
+      <container class="ach-row" name="ach-6">
+        <text class="ach-icon" name="ach-icon-6">?</text>
+        <container class="ach-info">
+          <text class="ach-name" name="ach-name-6">---</text>
+          <text class="ach-desc" name="ach-desc-6">---</text>
+        </container>
+      </container>
+      <container class="ach-row" name="ach-7">
+        <text class="ach-icon" name="ach-icon-7">?</text>
+        <container class="ach-info">
+          <text class="ach-name" name="ach-name-7">---</text>
+          <text class="ach-desc" name="ach-desc-7">---</text>
+        </container>
+      </container>
+    </container>
+    <container class="nav-row">
+      <container class="nav-btn" name="btn-ach-prev">
+        <text class="nav-text">PREV</text>
+      </container>
+      <text class="page-text" name="ach-page">1 / 1</text>
+      <container class="nav-btn" name="btn-ach-next">
+        <text class="nav-text">NEXT</text>
+      </container>
+    </container>
+    <container class="close-btn" name="btn-ach-close">
+      <text class="close-text">CLOSE</text>
+    </container>
+  </container>
+</root>

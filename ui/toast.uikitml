@@ -1,0 +1,42 @@
+<root>
+  <style>
+    .toast-root {
+      width: 320;
+      height: 60;
+      flex-direction: row;
+      align-items: center;
+      gap: 10;
+      padding-left: 16;
+      padding-right: 16;
+      background-color: rgba(30, 25, 0, 0.92);
+      border-radius: 10;
+      border-width: 2;
+      border-color: #ffaa00;
+    }
+    .toast-icon {
+      font-size: 18;
+      color: #ffaa00;
+      font-weight: bold;
+    }
+    .toast-info {
+      flex-direction: column;
+      gap: 2;
+    }
+    .toast-title {
+      font-size: 13;
+      color: #ffcc44;
+      font-weight: bold;
+    }
+    .toast-desc {
+      font-size: 10;
+      color: #aa8844;
+    }
+  </style>
+  <container class="toast-root">
+    <text class="toast-icon" name="toast-icon">[!]</text>
+    <container class="toast-info">
+      <text class="toast-title" name="toast-title">Achievement Unlocked!</text>
+      <text class="toast-desc" name="toast-desc">Description here</text>
+    </container>
+  </container>
+</root>

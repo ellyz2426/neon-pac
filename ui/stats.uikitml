@@ -1,0 +1,122 @@
+<root>
+  <style>
+    .stats-root {
+      width: 400;
+      height: 460;
+      flex-direction: column;
+      align-items: center;
+      gap: 8;
+      padding: 20;
+      background-color: rgba(0, 5, 20, 0.94);
+      border-radius: 12;
+      border-width: 2;
+      border-color: #44ff88;
+    }
+    .stats-title {
+      font-size: 22;
+      color: #44ff88;
+      font-weight: bold;
+    }
+    .stat-row {
+      width: 350;
+      height: 28;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 10;
+      padding-right: 10;
+    }
+    .stat-label {
+      font-size: 12;
+      color: #888899;
+    }
+    .stat-value {
+      font-size: 13;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    .divider {
+      width: 350;
+      height: 1;
+      background-color: #222244;
+    }
+    .section-title {
+      font-size: 11;
+      color: #44ff88;
+    }
+    .close-btn {
+      width: 120;
+      height: 36;
+      background-color: #222244;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #4444aa;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #333366;
+    }
+    .close-text {
+      font-size: 14;
+      color: #aaaacc;
+    }
+  </style>
+  <container class="stats-root">
+    <text class="stats-title">STATISTICS</text>
+    <text class="section-title">SCORES</text>
+    <container class="stat-row">
+      <text class="stat-label">High Score</text>
+      <text class="stat-value" name="stat-highscore">0</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Total Score</text>
+      <text class="stat-value" name="stat-totalscore">0</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Highest Level</text>
+      <text class="stat-value" name="stat-highlevel">1</text>
+    </container>
+    <container class="divider"/>
+    <text class="section-title">GAMEPLAY</text>
+    <container class="stat-row">
+      <text class="stat-label">Games Played</text>
+      <text class="stat-value" name="stat-games">0</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Total Time</text>
+      <text class="stat-value" name="stat-time">0:00</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Dots Eaten</text>
+      <text class="stat-value" name="stat-dots">0</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Power Pellets</text>
+      <text class="stat-value" name="stat-powers">0</text>
+    </container>
+    <container class="divider"/>
+    <text class="section-title">COMBAT</text>
+    <container class="stat-row">
+      <text class="stat-label">Ghosts Eaten</text>
+      <text class="stat-value" name="stat-ghosts">0</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Quad Kills</text>
+      <text class="stat-value" name="stat-quads">0</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Fruits Eaten</text>
+      <text class="stat-value" name="stat-fruits">0</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Total Deaths</text>
+      <text class="stat-value" name="stat-deaths">0</text>
+    </container>
+    <container class="stat-row">
+      <text class="stat-label">Best Level Streak</text>
+      <text class="stat-value" name="stat-streak">0</text>
+    </container>
+    <container class="close-btn" name="btn-stats-close">
+      <text class="close-text">CLOSE</text>
+    </container>
+  </container>
+</root>

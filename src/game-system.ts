@@ -1,10 +1,9 @@
-// === Neon Pac VR -- Game System (ECS) ===
+// === Neon Pac VR -- Game System (ECS, expanded) ===
 
 import { createSystem } from '@iwsdk/core';
 import { GameManager } from './game';
 import { Direction, GameState } from './types';
 
-// Runtime exposes keyboard + xr submanagers but the TS declaration is narrower
 interface RuntimeInput {
   keyboard?: {
     getKeyDown(key: string): boolean;
@@ -49,7 +48,6 @@ export class GameSystem extends createSystem({}) {
           this.game.setInput(Direction.RIGHT);
         }
 
-        // Held keys for continuous input
         if (kb.getKeyPressed('ArrowUp') || kb.getKeyPressed('KeyW')) {
           this.game.setInput(Direction.UP);
         } else if (kb.getKeyPressed('ArrowDown') || kb.getKeyPressed('KeyS')) {
@@ -71,6 +69,13 @@ export class GameSystem extends createSystem({}) {
         if (kb.getKeyDown('Space') || kb.getKeyDown('Enter')) {
           this.game.startGame();
         }
+        if (kb.getKeyDown('KeyM')) {
+          this.game.goToModeSelect();
+        }
+      } else if (this.game.state === GameState.MODE_SELECT) {
+        if (kb.getKeyDown('Escape')) {
+          this.game.returnToMenu();
+        }
       } else if (this.game.state === GameState.GAME_OVER) {
         if (kb.getKeyDown('Space') || kb.getKeyDown('Enter')) {
           this.game.returnToMenu();
@@ -78,7 +83,7 @@ export class GameSystem extends createSystem({}) {
       }
     }
 
-    // --- XR controller input ---
+    // XR controller input
     const right = inputMgr.gamepads.right;
     const left = inputMgr.gamepads.left;
 
@@ -103,6 +108,9 @@ export class GameSystem extends createSystem({}) {
       if (right.getButtonDown('b-button')) {
         if (this.game.state === GameState.PLAYING || this.game.state === GameState.PAUSED) {
           this.game.togglePause();
+        }
+        if (this.game.state === GameState.MODE_SELECT) {
+          this.game.returnToMenu();
         }
       }
     }

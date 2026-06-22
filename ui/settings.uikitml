@@ -1,0 +1,163 @@
+<root>
+  <style>
+    .settings-root {
+      width: 380;
+      height: 400;
+      flex-direction: column;
+      align-items: center;
+      gap: 14;
+      padding: 24;
+      background-color: rgba(0, 5, 20, 0.94);
+      border-radius: 12;
+      border-width: 2;
+      border-color: #00aaff;
+    }
+    .settings-title {
+      font-size: 22;
+      color: #00aaff;
+      font-weight: bold;
+    }
+    .setting-row {
+      width: 320;
+      height: 44;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 12;
+      padding-right: 12;
+    }
+    .setting-label {
+      font-size: 14;
+      color: #ccccdd;
+    }
+    .toggle-btn {
+      width: 80;
+      height: 32;
+      background-color: #0a1530;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #0066ff;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #0d2050;
+    }
+    .toggle-active {
+      width: 80;
+      height: 32;
+      background-color: #003388;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #0088ff;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #0044aa;
+    }
+    .toggle-text {
+      font-size: 12;
+      color: #ffffff;
+    }
+    .diff-row {
+      width: 320;
+      flex-direction: row;
+      justify-content: center;
+      gap: 8;
+    }
+    .diff-btn {
+      width: 90;
+      height: 34;
+      background-color: #0a1530;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #444466;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #0d2050;
+    }
+    .diff-active {
+      width: 90;
+      height: 34;
+      background-color: #003388;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #0088ff;
+      justify-content: center;
+      align-items: center;
+    }
+    .diff-text {
+      font-size: 12;
+      color: #ffffff;
+    }
+    .section-label {
+      font-size: 11;
+      color: #666688;
+    }
+    .theme-row {
+      width: 320;
+      flex-direction: row;
+      justify-content: center;
+      gap: 6;
+    }
+    .theme-btn {
+      width: 30;
+      height: 30;
+      border-radius: 15;
+      border-width: 2;
+      border-color: #333355;
+      hover-border-color: #ffffff;
+    }
+    .theme-active {
+      width: 30;
+      height: 30;
+      border-radius: 15;
+      border-width: 2;
+      border-color: #ffffff;
+    }
+    .close-btn {
+      width: 120;
+      height: 36;
+      background-color: #222244;
+      border-radius: 6;
+      border-width: 1;
+      border-color: #4444aa;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #333366;
+    }
+    .close-text {
+      font-size: 14;
+      color: #aaaacc;
+    }
+  </style>
+  <container class="settings-root">
+    <text class="settings-title">SETTINGS</text>
+    <container class="setting-row">
+      <text class="setting-label">Sound</text>
+      <container class="toggle-active" name="btn-sound">
+        <text class="toggle-text" name="sound-label">ON</text>
+      </container>
+    </container>
+    <text class="section-label">Difficulty</text>
+    <container class="diff-row">
+      <container class="diff-btn" name="btn-easy">
+        <text class="diff-text">EASY</text>
+      </container>
+      <container class="diff-active" name="btn-normal">
+        <text class="diff-text">NORMAL</text>
+      </container>
+      <container class="diff-btn" name="btn-hard">
+        <text class="diff-text">HARD</text>
+      </container>
+    </container>
+    <text class="section-label">Maze Theme</text>
+    <container class="theme-row">
+      <container class="theme-active" name="btn-theme-blue" style="background-color: #0066ff;"/>
+      <container class="theme-btn" name="btn-theme-red" style="background-color: #cc0033;"/>
+      <container class="theme-btn" name="btn-theme-green" style="background-color: #00cc44;"/>
+      <container class="theme-btn" name="btn-theme-purple" style="background-color: #8800cc;"/>
+      <container class="theme-btn" name="btn-theme-orange" style="background-color: #cc6600;"/>
+    </container>
+    <container class="close-btn" name="btn-settings-close">
+      <text class="close-text">CLOSE</text>
+    </container>
+  </container>
+</root>

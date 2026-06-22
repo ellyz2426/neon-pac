@@ -1,0 +1,221 @@
+{
+  "element": {
+    "sourceTag": "root",
+    "type": "custom",
+    "children": [
+      {
+        "sourceTag": "container",
+        "type": "custom",
+        "children": [
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "[!]"
+            ],
+            "properties": {
+              "class": "toast-icon",
+              "name": "toast-icon"
+            },
+            "dataUid": "uid-3"
+          },
+          {
+            "sourceTag": "container",
+            "type": "custom",
+            "children": [
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Achievement Unlocked!"
+                ],
+                "properties": {
+                  "class": "toast-title",
+                  "name": "toast-title"
+                },
+                "dataUid": "uid-5"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Description here"
+                ],
+                "properties": {
+                  "class": "toast-desc",
+                  "name": "toast-desc"
+                },
+                "dataUid": "uid-6"
+              }
+            ],
+            "properties": {
+              "class": "toast-info"
+            },
+            "dataUid": "uid-4"
+          }
+        ],
+        "properties": {
+          "class": "toast-root"
+        },
+        "dataUid": "uid-2"
+      }
+    ],
+    "properties": {},
+    "dataUid": "uid-1"
+  },
+  "classes": {
+    "toast-root": {
+      "content": {
+        "width": "320",
+        "height": "60",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "gap": "10",
+        "paddingLeft": "16",
+        "paddingRight": "16",
+        "backgroundColor": "rgba(30, 25, 0, 0.92)",
+        "borderRadius": 10,
+        "borderWidth": "2",
+        "borderColor": "#ffaa00"
+      }
+    },
+    "toast-icon": {
+      "content": {
+        "fontSize": "18",
+        "color": "#ffaa00",
+        "fontWeight": "bold"
+      }
+    },
+    "toast-info": {
+      "content": {
+        "flexDirection": "column",
+        "gap": "2"
+      }
+    },
+    "toast-title": {
+      "content": {
+        "fontSize": "13",
+        "color": "#ffcc44",
+        "fontWeight": "bold"
+      }
+    },
+    "toast-desc": {
+      "content": {
+        "fontSize": "10",
+        "color": "#aa8844"
+      }
+    }
+  },
+  "ranges": {
+    "uid-1": {
+      "start": {
+        "line": 0,
+        "column": 0
+      },
+      "end": {
+        "line": 41,
+        "column": 7
+      }
+    },
+    "toast-root": {
+      "start": {
+        "line": 2,
+        "column": 4
+      },
+      "end": {
+        "line": 2,
+        "column": 15
+      }
+    },
+    "toast-icon": {
+      "start": {
+        "line": 15,
+        "column": 4
+      },
+      "end": {
+        "line": 15,
+        "column": 15
+      }
+    },
+    "toast-info": {
+      "start": {
+        "line": 20,
+        "column": 4
+      },
+      "end": {
+        "line": 20,
+        "column": 15
+      }
+    },
+    "toast-title": {
+      "start": {
+        "line": 24,
+        "column": 4
+      },
+      "end": {
+        "line": 24,
+        "column": 16
+      }
+    },
+    "toast-desc": {
+      "start": {
+        "line": 29,
+        "column": 4
+      },
+      "end": {
+        "line": 29,
+        "column": 15
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 34,
+        "column": 2
+      },
+      "end": {
+        "line": 40,
+        "column": 14
+      }
+    },
+    "uid-3": {
+      "start": {
+        "line": 35,
+        "column": 4
+      },
+      "end": {
+        "line": 35,
+        "column": 57
+      }
+    },
+    "uid-4": {
+      "start": {
+        "line": 36,
+        "column": 4
+      },
+      "end": {
+        "line": 39,
+        "column": 16
+      }
+    },
+    "uid-5": {
+      "start": {
+        "line": 37,
+        "column": 6
+      },
+      "end": {
+        "line": 37,
+        "column": 79
+      }
+    },
+    "uid-6": {
+      "start": {
+        "line": 38,
+        "column": 6
+      },
+      "end": {
+        "line": 38,
+        "column": 72
+      }
+    }
+  }
+}
