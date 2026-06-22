@@ -95,6 +95,10 @@
       <text class="go-label">Time</text>
       <text class="go-value" name="final-time">0:00</text>
     </container>
+    <container class="go-row">
+      <text class="go-label">Leaderboard</text>
+      <text class="go-value" name="final-rank">-</text>
+    </container>
     <container class="divider"/>
     <container class="btn-row">
       <container class="btn" name="btn-retry">

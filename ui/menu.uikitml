@@ -108,6 +108,9 @@
       <container class="small-btn" name="btn-settings">
         <text class="small-text">Settings</text>
       </container>
+      <container class="small-btn" name="btn-leaderboard">
+        <text class="small-text">Leaderboard</text>
+      </container>
     </container>
     <text class="controls-text">Arrows/WASD or Thumbstick to move</text>
     <text class="controls-text">Space/A to select - ESC/B to pause</text>

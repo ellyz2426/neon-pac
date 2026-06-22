@@ -1,4 +1,4 @@
-// === Neon Pac VR -- Entry Point (expanded) ===
+// === Neon Pac VR -- Entry Point (v3: multi-layout, skins, leaderboard) ===
 
 import {
   World,
@@ -10,8 +10,10 @@ import {
   InstancedMesh,
   LineBasicMaterial,
   PointLight,
+  Group,
 } from '@iwsdk/core';
-import { buildMazeGroup, DotGrid } from './maze';
+import { buildMazeGroup, DotGrid, setMazeLayout, PacSkin } from './maze';
+import { getMazeForLevel } from './maze-layouts';
 import { GameManager } from './game';
 import { GameSystem } from './game-system';
 import { UISystem } from './ui-system';
@@ -44,11 +46,11 @@ async function main(): Promise<void> {
 
   // Build maze
   const dotGrid = new DotGrid();
-  const { mazeGroup, dotMeshes, pacmanMesh, ghostMeshes } = buildMazeGroup();
+  const { mazeGroup, dotMeshes, pacmanMesh, ghostMeshes, ghostEyes } = buildMazeGroup();
   world.scene.add(mazeGroup);
 
-  // Create game manager (now receives mazeGroup for fruit spawning)
-  const game = new GameManager(pacmanMesh, ghostMeshes, dotGrid, dotMeshes, mazeGroup);
+  // Create game manager with ghost eyes
+  const game = new GameManager(pacmanMesh, ghostMeshes, dotGrid, dotMeshes, mazeGroup, ghostEyes);
 
   // ---- PanelUI setup ----
   // HUD -- world-anchored above maze
@@ -112,6 +114,13 @@ async function main(): Promise<void> {
   toastEntity.object3D!.visible = false;
   toastEntity.addComponent(PanelUI, { config: './ui/toast.json' });
 
+  // Leaderboard panel
+  const leaderboardEntity = world.createTransformEntity();
+  leaderboardEntity.object3D!.position.set(0, MAZE_OFFSET_Y + 0.5, -0.3);
+  leaderboardEntity.object3D!.rotation.x = -0.3;
+  leaderboardEntity.object3D!.visible = false;
+  leaderboardEntity.addComponent(PanelUI, { config: './ui/leaderboard.json' });
+
   // ---- Register systems ----
   world.registerSystem(GameSystem);
   world.registerSystem(UISystem);
@@ -138,6 +147,7 @@ async function main(): Promise<void> {
     settingsEntity,
     statsEntity,
     toastEntity,
+    leaderboardEntity,
   });
 
   // Theme change handler

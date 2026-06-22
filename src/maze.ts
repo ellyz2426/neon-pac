@@ -1,4 +1,4 @@
-// === Neon Pac VR -- Maze Definition & 3D Construction ===
+// === Neon Pac VR -- Maze Definition & 3D Construction (v3: multi-layout) ===
 
 import {
   Group,
@@ -30,41 +30,26 @@ import {
   DIR_VECTORS,
   type GridPos,
 } from './types';
+import { MAZE_CLASSIC, getMazeForLevel } from './maze-layouts';
 
-// ---- Maze layout ----
-// # = wall, . = dot, o = power pellet, ' ' = empty/tunnel, G = ghost house
-const MAZE_RAW = [
-  '#####################',
-  '#.........#.........#',
-  '#.##.###..#..###.##.#',
-  '#o##.###..#..###.##o#',
-  '#...................#',
-  '#.##.#.#######.#.##.#',
-  '#....#....#....#....#',
-  '####.###..#..###.####',
-  '   #.#.........#.#   ',
-  '####.#.##GGG##.#.####',
-  '    ...#GGGGG#...    ',
-  '####.#.##GGG##.#.####',
-  '   #.#.........#.#   ',
-  '####.#.#######.#.####',
-  '#...................#',
-  '#.##.###..#..###.##.#',
-  '#o.#..............#o#',
-  '##.#.#.#######.#.#.##',
-  '#....#....#....#....#',
-  '#.#######.#.#######.#',
-  '#...................#',
-  '#####################',
-];
+// ---- Dynamic maze state ----
+let currentMaze: string[] = MAZE_CLASSIC;
 
-export const MAZE_ROWS = MAZE_RAW.length;
-export const MAZE_COLS = MAZE_RAW[0].length;
+export function setMazeLayout(maze: string[]): void {
+  currentMaze = maze;
+}
+
+export function getCurrentMaze(): string[] {
+  return currentMaze;
+}
+
+export const MAZE_ROWS = 22; // All layouts are 22 rows
+export const MAZE_COLS = 21; // All layouts are 21 cols
 
 export const PACMAN_START: GridPos = { col: 10, row: 16 };
 export const GHOST_HOUSE_EXIT: GridPos = { col: 10, row: 9 };
 export const GHOST_STARTS: GridPos[] = [
-  { col: 10, row: 10 }, // Blinky starts outside
+  { col: 10, row: 10 },
   { col: 9, row: 10 },
   { col: 10, row: 10 },
   { col: 11, row: 10 },
@@ -74,9 +59,9 @@ export const BLINKY_START: GridPos = { col: 10, row: 8 };
 // ---- Grid helpers ----
 export function getCell(col: number, row: number): CellType {
   if (row < 0 || row >= MAZE_ROWS) return CellType.WALL;
-  // Wrap tunnels horizontally
   const c = ((col % MAZE_COLS) + MAZE_COLS) % MAZE_COLS;
-  const ch = MAZE_RAW[row][c];
+  if (c >= currentMaze[row].length) return CellType.WALL;
+  const ch = currentMaze[row][c];
   if (ch === '#') return CellType.WALL;
   if (ch === '.') return CellType.DOT;
   if (ch === 'o') return CellType.POWER;
@@ -115,7 +100,6 @@ export function canMove(col: number, row: number, dir: Direction, allowGhostHous
   if (!dv) return false;
   let nc = col + dv.col;
   const nr = row + dv.row;
-  // Tunnel wrap
   if (nc < 0) nc = MAZE_COLS - 1;
   if (nc >= MAZE_COLS) nc = 0;
   return isWalkable(nc, nr, allowGhostHouse);
@@ -141,6 +125,13 @@ export class DotGrid {
     this.totalDots = 0;
     this.dotsEaten = 0;
     this.powerPellets = new Set();
+    this.initFromMaze();
+  }
+
+  private initFromMaze(): void {
+    this.dots = [];
+    this.totalDots = 0;
+    this.powerPellets.clear();
     for (let r = 0; r < MAZE_ROWS; r++) {
       this.dots[r] = [];
       for (let c = 0; c < MAZE_COLS; c++) {
@@ -180,18 +171,7 @@ export class DotGrid {
 
   reset(): void {
     this.dotsEaten = 0;
-    this.powerPellets.clear();
-    for (let r = 0; r < MAZE_ROWS; r++) {
-      for (let c = 0; c < MAZE_COLS; c++) {
-        const cell = getCell(c, r);
-        if (cell === CellType.DOT || cell === CellType.POWER) {
-          this.dots[r][c] = true;
-          if (cell === CellType.POWER) {
-            this.powerPellets.add(`${c},${r}`);
-          }
-        }
-      }
-    }
+    this.initFromMaze();
   }
 }
 
@@ -203,11 +183,37 @@ const DOT_COLOR = 0xffff88;
 const POWER_COLOR = 0xffaa00;
 const PACMAN_COLOR = 0xffff00;
 
-export function buildMazeGroup(): {
+// Pac-Man skin colors
+export enum PacSkin {
+  CLASSIC = 'classic',
+  NEON = 'neon',
+  ICE = 'ice',
+  FIRE = 'fire',
+  GHOST_WHITE = 'ghost_white',
+}
+
+export const PAC_SKIN_COLORS: Record<PacSkin, { main: number; emissive: number }> = {
+  [PacSkin.CLASSIC]: { main: 0xffff00, emissive: 0xffff00 },
+  [PacSkin.NEON]: { main: 0x00ff88, emissive: 0x00ff66 },
+  [PacSkin.ICE]: { main: 0x88ddff, emissive: 0x66bbff },
+  [PacSkin.FIRE]: { main: 0xff4400, emissive: 0xff2200 },
+  [PacSkin.GHOST_WHITE]: { main: 0xeeeeff, emissive: 0xccccff },
+};
+
+export const PAC_SKIN_NAMES: Record<PacSkin, string> = {
+  [PacSkin.CLASSIC]: 'Classic Yellow',
+  [PacSkin.NEON]: 'Neon Green',
+  [PacSkin.ICE]: 'Ice Blue',
+  [PacSkin.FIRE]: 'Fire Red',
+  [PacSkin.GHOST_WHITE]: 'Phantom',
+};
+
+export function buildMazeGroup(pacSkin: PacSkin = PacSkin.CLASSIC): {
   mazeGroup: Group;
   dotMeshes: Map<string, Mesh>;
   pacmanMesh: Mesh;
   ghostMeshes: Mesh[];
+  ghostEyes: Array<{ leftWhite: Mesh; rightWhite: Mesh; leftPupil: Mesh; rightPupil: Mesh }>;
 } {
   const mazeGroup = new Group();
   const dotMeshes = new Map<string, Mesh>();
@@ -226,7 +232,7 @@ export function buildMazeGroup(): {
   floor.position.set(0, MAZE_OFFSET_Y - WALL_HEIGHT / 2 - 0.001, 0);
   mazeGroup.add(floor);
 
-  // Walls -- use instanced mesh for performance
+  // Walls -- instanced mesh
   const wallGeo = new BoxGeometry(CELL_SIZE * 0.95, WALL_HEIGHT, CELL_SIZE * 0.95);
   const wallMat = new MeshStandardMaterial({
     color: NEON_BLUE,
@@ -236,7 +242,6 @@ export function buildMazeGroup(): {
     metalness: 0.7,
   });
 
-  // Count walls
   let wallCount = 0;
   for (let r = 0; r < MAZE_ROWS; r++) {
     for (let c = 0; c < MAZE_COLS; c++) {
@@ -266,7 +271,6 @@ export function buildMazeGroup(): {
   for (let r = 0; r < MAZE_ROWS; r++) {
     for (let c = 0; c < MAZE_COLS; c++) {
       if (getCell(c, r) === CellType.WALL) {
-        // Only add edges to border walls for performance
         const neighbors = [
           { dr: -1, dc: 0 }, { dr: 1, dc: 0 },
           { dr: 0, dc: -1 }, { dr: 0, dc: 1 },
@@ -283,15 +287,6 @@ export function buildMazeGroup(): {
       }
     }
   }
-
-  // Ghost house walls -- slightly different color
-  const ghostHouseMat = new MeshStandardMaterial({
-    color: 0x440088,
-    emissive: new Color(0x330066),
-    emissiveIntensity: 0.3,
-    roughness: 0.4,
-    metalness: 0.6,
-  });
 
   // Ghost door
   const doorPos = gridToWorld(10, 9);
@@ -339,11 +334,12 @@ export function buildMazeGroup(): {
     }
   }
 
-  // Pac-Man mesh
+  // Pac-Man mesh with skin
+  const skinColors = PAC_SKIN_COLORS[pacSkin];
   const pacGeo = new SphereGeometry(CELL_SIZE * 0.4, 16, 12);
   const pacMat = new MeshStandardMaterial({
-    color: PACMAN_COLOR,
-    emissive: new Color(PACMAN_COLOR),
+    color: skinColors.main,
+    emissive: new Color(skinColors.emissive),
     emissiveIntensity: 0.6,
   });
   const pacmanMesh = new Mesh(pacGeo, pacMat);
@@ -351,19 +347,24 @@ export function buildMazeGroup(): {
   pacmanMesh.position.set(pacStart.x, pacStart.y + WALL_HEIGHT * 0.5, pacStart.z);
   mazeGroup.add(pacmanMesh);
 
-  // Ghost meshes
+  // Ghost meshes with eyes
   const ghostGeo = new SphereGeometry(CELL_SIZE * 0.38, 16, 12);
-  const ghostNames = ['blinky', 'pinky', 'inky', 'clyde'] as const;
   const ghostColors = [0xff0000, 0xff69b4, 0x00ffff, 0xffa500];
   const ghostMeshes: Mesh[] = [];
+  const ghostEyes: Array<{ leftWhite: Mesh; rightWhite: Mesh; leftPupil: Mesh; rightPupil: Mesh }> = [];
 
-  // Blinky starts outside, others in house
   const ghostStartPositions = [
     gridToWorld(BLINKY_START.col, BLINKY_START.row),
     gridToWorld(9, 10),
     gridToWorld(10, 10),
     gridToWorld(11, 10),
   ];
+
+  // Eye geometry (shared)
+  const eyeWhiteGeo = new SphereGeometry(CELL_SIZE * 0.12, 8, 6);
+  const eyePupilGeo = new SphereGeometry(CELL_SIZE * 0.06, 6, 4);
+  const eyeWhiteMat = new MeshBasicMaterial({ color: 0xffffff });
+  const eyePupilMat = new MeshBasicMaterial({ color: 0x000088 });
 
   for (let i = 0; i < 4; i++) {
     const mat = new MeshStandardMaterial({
@@ -379,6 +380,29 @@ export function buildMazeGroup(): {
     );
     mazeGroup.add(ghost);
     ghostMeshes.push(ghost);
+
+    // Eyes - positioned on front face of ghost
+    const eyeY = CELL_SIZE * 0.08;
+    const eyeSpacing = CELL_SIZE * 0.12;
+    const eyeForward = CELL_SIZE * 0.32;
+
+    const leftWhite = new Mesh(eyeWhiteGeo, eyeWhiteMat);
+    leftWhite.position.set(-eyeSpacing, eyeY, -eyeForward);
+    ghost.add(leftWhite);
+
+    const rightWhite = new Mesh(eyeWhiteGeo, eyeWhiteMat);
+    rightWhite.position.set(eyeSpacing, eyeY, -eyeForward);
+    ghost.add(rightWhite);
+
+    const leftPupil = new Mesh(eyePupilGeo, eyePupilMat);
+    leftPupil.position.set(0, 0, -CELL_SIZE * 0.06);
+    leftWhite.add(leftPupil);
+
+    const rightPupil = new Mesh(eyePupilGeo, eyePupilMat);
+    rightPupil.position.set(0, 0, -CELL_SIZE * 0.06);
+    rightWhite.add(rightPupil);
+
+    ghostEyes.push({ leftWhite, rightWhite, leftPupil, rightPupil });
   }
 
   // Lighting
@@ -389,18 +413,17 @@ export function buildMazeGroup(): {
   topLight.position.set(0, MAZE_OFFSET_Y + 2, 0);
   mazeGroup.add(topLight);
 
-  // Corner lights for power pellets
-  const corners = [
-    gridToWorld(1, 3),
-    gridToWorld(19, 3),
-    gridToWorld(1, 16),
-    gridToWorld(19, 16),
-  ];
-  for (const corner of corners) {
-    const light = new PointLight(POWER_COLOR, 0.5, 2);
-    light.position.set(corner.x, corner.y + 0.3, corner.z);
-    mazeGroup.add(light);
+  // Corner lights for power pellets — find actual power pellet positions
+  for (let r = 0; r < MAZE_ROWS; r++) {
+    for (let c = 0; c < MAZE_COLS; c++) {
+      if (getCell(c, r) === CellType.POWER) {
+        const pos = gridToWorld(c, r);
+        const light = new PointLight(POWER_COLOR, 0.5, 2);
+        light.position.set(pos.x, pos.y + 0.3, pos.z);
+        mazeGroup.add(light);
+      }
+    }
   }
 
-  return { mazeGroup, dotMeshes, pacmanMesh, ghostMeshes };
+  return { mazeGroup, dotMeshes, pacmanMesh, ghostMeshes, ghostEyes };
 }

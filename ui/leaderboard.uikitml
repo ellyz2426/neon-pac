@@ -1,0 +1,99 @@
+<container>
+  <style>
+    .root { flexDirection: column; alignItems: center; gap: "6"; padding: "12"; backgroundColor: "#111122ee"; borderRadius: "8"; width: "320"; }
+    .title { fontSize: "16"; color: "#ffcc00"; }
+    .filter-row { flexDirection: row; gap: "6"; }
+    .filter-btn { fontSize: "10"; color: "#aaaaff"; backgroundColor: "#222244"; padding: "4"; borderRadius: "4"; }
+    .entry-row { flexDirection: row; justifyContent: space-between; width: "290"; padding: "2"; }
+    .rank { fontSize: "11"; color: "#888899"; width: "30"; }
+    .score-val { fontSize: "11"; color: "#ffffff"; width: "80"; }
+    .level-val { fontSize: "10"; color: "#aaaacc"; width: "40"; }
+    .mode-val { fontSize: "10"; color: "#88ccff"; width: "60"; }
+    .date-val { fontSize: "9"; color: "#666688"; width: "60"; }
+    .close-btn { fontSize: "12"; color: "#ff6666"; backgroundColor: "#331111"; padding: "6"; borderRadius: "4"; marginTop: "6"; }
+    .header-row { flexDirection: row; justifyContent: space-between; width: "290"; padding: "2"; borderBottomWidth: "1"; borderColor: "#333355"; }
+    .header-text { fontSize: "9"; color: "#6666aa"; }
+    .empty-text { fontSize: "11"; color: "#666688"; }
+  </style>
+
+  <container class="root">
+    <text class="title" name="lb-title">LEADERBOARD</text>
+
+    <container class="filter-row">
+      <text class="filter-btn" name="lb-all">ALL</text>
+      <text class="filter-btn" name="lb-classic">Classic</text>
+      <text class="filter-btn" name="lb-speed">Speed</text>
+      <text class="filter-btn" name="lb-dark">Dark</text>
+      <text class="filter-btn" name="lb-survival">Survival</text>
+    </container>
+
+    <container class="header-row">
+      <text class="header-text" style="width: 30">#</text>
+      <text class="header-text" style="width: 80">Score</text>
+      <text class="header-text" style="width: 40">Lvl</text>
+      <text class="header-text" style="width: 60">Mode</text>
+      <text class="header-text" style="width: 60">Date</text>
+    </container>
+
+    <container class="entry-row" name="lb-row-0">
+      <text class="rank" name="lb-rank-0">1</text>
+      <text class="score-val" name="lb-score-0">-</text>
+      <text class="level-val" name="lb-level-0">-</text>
+      <text class="mode-val" name="lb-mode-0">-</text>
+      <text class="date-val" name="lb-date-0">-</text>
+    </container>
+    <container class="entry-row" name="lb-row-1">
+      <text class="rank" name="lb-rank-1">2</text>
+      <text class="score-val" name="lb-score-1">-</text>
+      <text class="level-val" name="lb-level-1">-</text>
+      <text class="mode-val" name="lb-mode-1">-</text>
+      <text class="date-val" name="lb-date-1">-</text>
+    </container>
+    <container class="entry-row" name="lb-row-2">
+      <text class="rank" name="lb-rank-2">3</text>
+      <text class="score-val" name="lb-score-2">-</text>
+      <text class="level-val" name="lb-level-2">-</text>
+      <text class="mode-val" name="lb-mode-2">-</text>
+      <text class="date-val" name="lb-date-2">-</text>
+    </container>
+    <container class="entry-row" name="lb-row-3">
+      <text class="rank" name="lb-rank-3">4</text>
+      <text class="score-val" name="lb-score-3">-</text>
+      <text class="level-val" name="lb-level-3">-</text>
+      <text class="mode-val" name="lb-mode-3">-</text>
+      <text class="date-val" name="lb-date-3">-</text>
+    </container>
+    <container class="entry-row" name="lb-row-4">
+      <text class="rank" name="lb-rank-4">5</text>
+      <text class="score-val" name="lb-score-4">-</text>
+      <text class="level-val" name="lb-level-4">-</text>
+      <text class="mode-val" name="lb-mode-4">-</text>
+      <text class="date-val" name="lb-date-4">-</text>
+    </container>
+    <container class="entry-row" name="lb-row-5">
+      <text class="rank" name="lb-rank-5">6</text>
+      <text class="score-val" name="lb-score-5">-</text>
+      <text class="level-val" name="lb-level-5">-</text>
+      <text class="mode-val" name="lb-mode-5">-</text>
+      <text class="date-val" name="lb-date-5">-</text>
+    </container>
+    <container class="entry-row" name="lb-row-6">
+      <text class="rank" name="lb-rank-6">7</text>
+      <text class="score-val" name="lb-score-6">-</text>
+      <text class="level-val" name="lb-level-6">-</text>
+      <text class="mode-val" name="lb-mode-6">-</text>
+      <text class="date-val" name="lb-date-6">-</text>
+    </container>
+    <container class="entry-row" name="lb-row-7">
+      <text class="rank" name="lb-rank-7">8</text>
+      <text class="score-val" name="lb-score-7">-</text>
+      <text class="level-val" name="lb-level-7">-</text>
+      <text class="mode-val" name="lb-mode-7">-</text>
+      <text class="date-val" name="lb-date-7">-</text>
+    </container>
+
+    <text class="empty-text" name="lb-empty">No scores yet. Play to earn your spot!</text>
+
+    <text class="close-btn" name="btn-lb-close">CLOSE</text>
+  </container>
+</container>

@@ -18,6 +18,7 @@ export const DOT_SCORE = 10;
 export const POWER_PELLET_SCORE = 50;
 export const GHOST_EAT_SCORES = [200, 400, 800, 1600];
 export const FRUIT_SCORE = 100;
+export const EXTRA_LIFE_SCORE = 10000; // Extra life every 10K points
 
 export enum CellType {
   WALL = '#',

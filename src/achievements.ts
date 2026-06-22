@@ -107,6 +107,15 @@ const ACHIEVEMENT_DEFS: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = [
   { id: 'quad_kill_twice', title: 'Double Quad', description: 'Get two quad kills in one game', icon: '[DQ]', category: AchievementCategory.GHOST },
   { id: 'no_tunnel', title: 'Straight Path', description: 'Clear a level without using tunnels', icon: '[SP]', category: AchievementCategory.SKILL },
   { id: 'ten_k_no_death', title: 'Perfection', description: 'Score 10K without dying', icon: '[PF]', category: AchievementCategory.MASTERY },
+  { id: 'extra_life', title: '1-UP!', description: 'Earn an extra life', icon: '[1U]', category: AchievementCategory.SCORE },
+
+  // Maze achievements
+  { id: 'maze_corridors', title: 'Corridor Runner', description: 'Play the Corridors maze', icon: '[CR]', category: AchievementCategory.LEVEL },
+  { id: 'maze_arena', title: 'Arena Champion', description: 'Play the Arena maze', icon: '[AR]', category: AchievementCategory.LEVEL },
+  { id: 'maze_spiral', title: 'Spiral Master', description: 'Play the Spiral maze', icon: '[SM]', category: AchievementCategory.LEVEL },
+
+  // Skin achievements
+  { id: 'skin_change', title: 'Fashion Forward', description: 'Change your Pac-Man skin', icon: '[SK]', category: AchievementCategory.MASTERY },
 ];
 
 const STORAGE_KEY = 'neon-pac-achievements';

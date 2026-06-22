@@ -1,4 +1,4 @@
-// === Neon Pac VR -- UI System (PanelUI / ECS, expanded) ===
+// === Neon Pac VR -- UI System (PanelUI / ECS, v3: leaderboard, skins) ===
 
 import {
   createSystem,
@@ -10,6 +10,7 @@ import {
 } from '@iwsdk/core';
 import { GameManager } from './game';
 import { GameState, GameMode, Difficulty, MazeTheme } from './types';
+import { PacSkin, PAC_SKIN_NAMES } from './maze';
 import type { Achievement } from './achievements';
 
 export class UISystem extends createSystem({
@@ -49,6 +50,10 @@ export class UISystem extends createSystem({
     required: [PanelUI, PanelDocument],
     where: [eq(PanelUI, 'config', './ui/toast.json')],
   },
+  leaderboard: {
+    required: [PanelUI, PanelDocument],
+    where: [eq(PanelUI, 'config', './ui/leaderboard.json')],
+  },
 }) {
   private game!: GameManager;
 
@@ -62,6 +67,7 @@ export class UISystem extends createSystem({
   private settingsEntity: any = null;
   private statsEntity: any = null;
   private toastEntity: any = null;
+  private leaderboardEntity: any = null;
 
   // Doc refs
   private hudDoc: UIKitDocument | null = null;
@@ -73,6 +79,7 @@ export class UISystem extends createSystem({
   private settingsDoc: UIKitDocument | null = null;
   private statsDoc: UIKitDocument | null = null;
   private toastDoc: UIKitDocument | null = null;
+  private leaderboardDoc: UIKitDocument | null = null;
 
   // Achievement page state
   private achPage = 0;
@@ -81,11 +88,17 @@ export class UISystem extends createSystem({
   private toastTimer = 0;
   private toastQueue: Achievement[] = [];
 
-  // Currently showing overlay (achievements, settings, stats)
+  // Leaderboard filter
+  private lbFilter = 'all';
+
+  // Currently showing overlay
   private overlayShowing: string | null = null;
 
   // Theme change callback
   onThemeChange?: (theme: MazeTheme) => void;
+
+  // Wall glow animation state
+  private wallGlowTime = 0;
 
   setRefs(refs: {
     game: GameManager;
@@ -98,6 +111,7 @@ export class UISystem extends createSystem({
     settingsEntity: any;
     statsEntity: any;
     toastEntity: any;
+    leaderboardEntity: any;
   }): void {
     this.game = refs.game;
     this.hudEntity = refs.hudEntity;
@@ -109,6 +123,7 @@ export class UISystem extends createSystem({
     this.settingsEntity = refs.settingsEntity;
     this.statsEntity = refs.statsEntity;
     this.toastEntity = refs.toastEntity;
+    this.leaderboardEntity = refs.leaderboardEntity;
 
     // Register game callbacks
     this.game.onScoreChange = (score, highScore) => this.updateScore(score, highScore);
@@ -117,6 +132,7 @@ export class UISystem extends createSystem({
     this.game.onStateChange = (state) => this.updateState(state);
     this.game.onComboDisplay = (text) => this.showCombo(text);
     this.game.onFruitEaten = (_type, score) => this.showCombo(`+${score}`);
+    this.game.onMazeChange = (name) => this.updateMazeLabel(name);
 
     // Achievement notifications
     this.game.achievements.onUnlock = (ach) => this.queueToast(ach);
@@ -165,6 +181,13 @@ export class UISystem extends createSystem({
       settingsBtn?.addEventListener('click', () => {
         this.game.audio.playMenuSelect();
         this.showOverlay('settings');
+      });
+
+      // Leaderboard button
+      const lbBtn = doc.getElementById('btn-leaderboard') as UIKit.Text | undefined;
+      lbBtn?.addEventListener('click', () => {
+        this.game.audio.playMenuSelect();
+        this.showOverlay('leaderboard');
       });
     });
 
@@ -315,6 +338,25 @@ export class UISystem extends createSystem({
         });
       }
 
+      // Skin buttons
+      const skins: Array<{ btn: string; skin: PacSkin }> = [
+        { btn: 'btn-skin-classic', skin: PacSkin.CLASSIC },
+        { btn: 'btn-skin-neon', skin: PacSkin.NEON },
+        { btn: 'btn-skin-ice', skin: PacSkin.ICE },
+        { btn: 'btn-skin-fire', skin: PacSkin.FIRE },
+        { btn: 'btn-skin-ghost', skin: PacSkin.GHOST_WHITE },
+      ];
+      for (const { btn, skin } of skins) {
+        const el = doc.getElementById(btn) as UIKit.Text | undefined;
+        el?.addEventListener('click', () => {
+          this.game.audio.playMenuSelect();
+          this.game.setPacSkin(skin);
+          this.game.achievements.unlock('skin_change');
+          const skinLabel = doc.getElementById('current-skin') as UIKit.Text | undefined;
+          skinLabel?.setProperties({ text: `Skin: ${PAC_SKIN_NAMES[skin]}` });
+        });
+      }
+
       const closeBtn = doc.getElementById('btn-settings-close') as UIKit.Text | undefined;
       closeBtn?.addEventListener('click', () => {
         this.game.audio.playMenuSelect();
@@ -341,6 +383,36 @@ export class UISystem extends createSystem({
       if (!doc) return;
       this.toastDoc = doc;
     });
+
+    // Leaderboard panel ready
+    this.queries.leaderboard.subscribe('qualify', (entity) => {
+      const doc = entity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
+      if (!doc) return;
+      this.leaderboardDoc = doc;
+
+      // Filter buttons
+      const filters: Array<{ btn: string; filter: string }> = [
+        { btn: 'lb-all', filter: 'all' },
+        { btn: 'lb-classic', filter: 'classic' },
+        { btn: 'lb-speed', filter: 'speed' },
+        { btn: 'lb-dark', filter: 'dark' },
+        { btn: 'lb-survival', filter: 'survival' },
+      ];
+      for (const { btn, filter } of filters) {
+        const el = doc.getElementById(btn) as UIKit.Text | undefined;
+        el?.addEventListener('click', () => {
+          this.game.audio.playMenuSelect();
+          this.lbFilter = filter;
+          this.renderLeaderboard();
+        });
+      }
+
+      const closeBtn = doc.getElementById('btn-lb-close') as UIKit.Text | undefined;
+      closeBtn?.addEventListener('click', () => {
+        this.game.audio.playMenuSelect();
+        this.hideOverlay();
+      });
+    });
   }
 
   // ---- Overlays ----
@@ -360,6 +432,11 @@ export class UISystem extends createSystem({
       this.statsEntity.object3D.visible = true;
       this.renderStats();
     }
+    if (name === 'leaderboard' && this.leaderboardEntity?.object3D) {
+      this.leaderboardEntity.object3D.visible = true;
+      this.lbFilter = 'all';
+      this.renderLeaderboard();
+    }
   }
 
   private hideOverlay(): void {
@@ -367,10 +444,53 @@ export class UISystem extends createSystem({
     if (this.achievementsEntity?.object3D) this.achievementsEntity.object3D.visible = false;
     if (this.settingsEntity?.object3D) this.settingsEntity.object3D.visible = false;
     if (this.statsEntity?.object3D) this.statsEntity.object3D.visible = false;
+    if (this.leaderboardEntity?.object3D) this.leaderboardEntity.object3D.visible = false;
 
-    // Show menu again if we're in menu state
     if (this.game.state === GameState.MENU && this.menuEntity?.object3D) {
       this.menuEntity.object3D.visible = true;
+    }
+  }
+
+  // ---- Leaderboard rendering ----
+  private renderLeaderboard(): void {
+    if (!this.leaderboardDoc) return;
+
+    const modeFilter = this.lbFilter === 'all' ? undefined : this.lbFilter;
+    const entries = this.game.leaderboard.getTopScores(8, modeFilter);
+
+    const emptyEl = this.leaderboardDoc.getElementById('lb-empty') as UIKit.Text | undefined;
+    if (entries.length === 0) {
+      emptyEl?.setProperties({ text: 'No scores yet. Play to earn your spot!' });
+    } else {
+      emptyEl?.setProperties({ text: ' ' });
+    }
+
+    for (let i = 0; i < 8; i++) {
+      const entry = entries[i];
+      const rankEl = this.leaderboardDoc.getElementById(`lb-rank-${i}`) as UIKit.Text | undefined;
+      const scoreEl = this.leaderboardDoc.getElementById(`lb-score-${i}`) as UIKit.Text | undefined;
+      const levelEl = this.leaderboardDoc.getElementById(`lb-level-${i}`) as UIKit.Text | undefined;
+      const modeEl = this.leaderboardDoc.getElementById(`lb-mode-${i}`) as UIKit.Text | undefined;
+      const dateEl = this.leaderboardDoc.getElementById(`lb-date-${i}`) as UIKit.Text | undefined;
+
+      if (entry) {
+        rankEl?.setProperties({ text: `${i + 1}` });
+        scoreEl?.setProperties({ text: String(entry.score) });
+        levelEl?.setProperties({ text: `L${entry.level}` });
+        const modeNames: Record<string, string> = {
+          classic: 'Classic', speed: 'Speed', dark: 'Dark',
+          survival: 'Survival', marathon: 'Marathon', zen: 'Zen',
+        };
+        modeEl?.setProperties({ text: modeNames[entry.mode] ?? entry.mode });
+        const d = new Date(entry.date);
+        dateEl?.setProperties({ text: `${d.getMonth() + 1}/${d.getDate()}` });
+      } else {
+        rankEl?.setProperties({ text: `${i + 1}` });
+        scoreEl?.setProperties({ text: '-' });
+        levelEl?.setProperties({ text: '-' });
+        modeEl?.setProperties({ text: '-' });
+        dateEl?.setProperties({ text: '-' });
+      }
     }
   }
 
@@ -458,6 +578,13 @@ export class UISystem extends createSystem({
     this.comboTimer = 1.5;
   }
 
+  // Maze label
+  private updateMazeLabel(name: string): void {
+    if (!this.hudDoc) return;
+    const mazeEl = this.hudDoc.getElementById('maze-label') as UIKit.Text | undefined;
+    mazeEl?.setProperties({ text: name });
+  }
+
   // ---- HUD updates ----
   private updateScore(score: number, highScore: number): void {
     if (!this.hudDoc) return;
@@ -478,7 +605,6 @@ export class UISystem extends createSystem({
     if (!this.hudDoc) return;
     const levelEl = this.hudDoc.getElementById('level') as UIKit.Text | undefined;
     levelEl?.setProperties({ text: `LVL ${level}` });
-    // Update mode indicator
     const modeLabels: Record<GameMode, string> = {
       [GameMode.CLASSIC]: 'Classic',
       [GameMode.SPEED]: 'Speed',
@@ -549,6 +675,11 @@ export class UISystem extends createSystem({
       } else {
         newHigh?.setProperties({ text: '' });
       }
+
+      // Show rank
+      const rank = this.game.leaderboard.getRank(this.game.score);
+      const rankEl = this.gameoverDoc.getElementById('final-rank') as UIKit.Text | undefined;
+      rankEl?.setProperties({ text: `Rank: #${rank}` });
     }
   }
 

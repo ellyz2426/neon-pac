@@ -190,4 +190,36 @@ export class AudioManager {
       osc.stop(startTime + 0.18);
     }
   }
+
+  playExtraLife(): void {
+    const ctx = this.getCtx();
+    const t = ctx.currentTime;
+    // Triumphant ascending arpeggio
+    const notes = [523, 659, 784, 1047, 1319];
+    for (let i = 0; i < notes.length; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      const startTime = t + i * 0.08;
+      osc.frequency.setValueAtTime(notes[i], startTime);
+      gain.gain.setValueAtTime(0.2, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.2);
+      osc.connect(gain);
+      gain.connect(this.getMaster());
+      osc.start(startTime);
+      osc.stop(startTime + 0.25);
+    }
+    // Add a shimmer
+    const shimmer = ctx.createOscillator();
+    const shimmerGain = ctx.createGain();
+    shimmer.type = 'triangle';
+    shimmer.frequency.setValueAtTime(2000, t + 0.3);
+    shimmer.frequency.linearRampToValueAtTime(4000, t + 0.6);
+    shimmerGain.gain.setValueAtTime(0.06, t + 0.3);
+    shimmerGain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+    shimmer.connect(shimmerGain);
+    shimmerGain.connect(this.getMaster());
+    shimmer.start(t + 0.3);
+    shimmer.stop(t + 0.8);
+  }
 }

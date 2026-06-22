@@ -216,6 +216,39 @@
                 "type": "custom",
                 "children": [
                   {
+                    "sourceTag": "text",
+                    "type": "custom",
+                    "children": [
+                      "Leaderboard"
+                    ],
+                    "properties": {
+                      "class": "go-label"
+                    },
+                    "dataUid": "uid-23"
+                  },
+                  {
+                    "sourceTag": "text",
+                    "type": "custom",
+                    "children": [
+                      "-"
+                    ],
+                    "properties": {
+                      "class": "go-value",
+                      "name": "final-rank"
+                    },
+                    "dataUid": "uid-24"
+                  }
+                ],
+                "properties": {
+                  "class": "go-row"
+                },
+                "dataUid": "uid-22"
+              },
+              {
+                "sourceTag": "container",
+                "type": "custom",
+                "children": [
+                  {
                     "sourceTag": "container",
                     "type": "custom",
                     "children": [
@@ -232,14 +265,14 @@
                             "properties": {
                               "class": "btn-text"
                             },
-                            "dataUid": "uid-25"
+                            "dataUid": "uid-28"
                           }
                         ],
                         "properties": {
                           "class": "btn",
                           "name": "btn-retry"
                         },
-                        "dataUid": "uid-24"
+                        "dataUid": "uid-27"
                       },
                       {
                         "sourceTag": "container",
@@ -254,26 +287,26 @@
                             "properties": {
                               "class": "btn-text"
                             },
-                            "dataUid": "uid-27"
+                            "dataUid": "uid-30"
                           }
                         ],
                         "properties": {
                           "class": "btn",
                           "name": "btn-menu"
                         },
-                        "dataUid": "uid-26"
+                        "dataUid": "uid-29"
                       }
                     ],
                     "properties": {
                       "class": "btn-row"
                     },
-                    "dataUid": "uid-23"
+                    "dataUid": "uid-26"
                   }
                 ],
                 "properties": {
                   "class": "divider"
                 },
-                "dataUid": "uid-22"
+                "dataUid": "uid-25"
               }
             ],
             "properties": {
@@ -391,7 +424,7 @@
         "column": 0
       },
       "end": {
-        "line": 107,
+        "line": 111,
         "column": 7
       }
     },
@@ -511,7 +544,7 @@
         "column": 2
       },
       "end": {
-        "line": 107,
+        "line": 111,
         "column": 0
       }
     },
@@ -551,7 +584,7 @@
         "column": 4
       },
       "end": {
-        "line": 107,
+        "line": 111,
         "column": 0
       }
     },
@@ -711,18 +744,18 @@
         "column": 4
       },
       "end": {
-        "line": 106,
-        "column": 14
+        "line": 100,
+        "column": 16
       }
     },
     "uid-23": {
       "start": {
         "line": 98,
-        "column": 4
+        "column": 6
       },
       "end": {
-        "line": 105,
-        "column": 16
+        "line": 98,
+        "column": 47
       }
     },
     "uid-24": {
@@ -731,37 +764,67 @@
         "column": 6
       },
       "end": {
-        "line": 101,
-        "column": 18
+        "line": 99,
+        "column": 55
       }
     },
     "uid-25": {
       "start": {
-        "line": 100,
-        "column": 8
+        "line": 101,
+        "column": 4
       },
       "end": {
-        "line": 100,
-        "column": 43
+        "line": 110,
+        "column": 14
       }
     },
     "uid-26": {
       "start": {
         "line": 102,
-        "column": 6
+        "column": 4
       },
       "end": {
-        "line": 104,
-        "column": 18
+        "line": 109,
+        "column": 16
       }
     },
     "uid-27": {
       "start": {
         "line": 103,
+        "column": 6
+      },
+      "end": {
+        "line": 105,
+        "column": 18
+      }
+    },
+    "uid-28": {
+      "start": {
+        "line": 104,
         "column": 8
       },
       "end": {
-        "line": 103,
+        "line": 104,
+        "column": 43
+      }
+    },
+    "uid-29": {
+      "start": {
+        "line": 106,
+        "column": 6
+      },
+      "end": {
+        "line": 108,
+        "column": 18
+      }
+    },
+    "uid-30": {
+      "start": {
+        "line": 107,
+        "column": 8
+      },
+      "end": {
+        "line": 107,
         "column": 42
       }
     }

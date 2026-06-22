@@ -156,6 +156,15 @@
       <container class="theme-btn" name="btn-theme-purple" style="background-color: #8800cc;"/>
       <container class="theme-btn" name="btn-theme-orange" style="background-color: #cc6600;"/>
     </container>
+    <text class="section-label">Pac-Man Skin</text>
+    <text class="section-label" name="current-skin">Skin: Classic Yellow</text>
+    <container class="theme-row">
+      <container class="theme-active" name="btn-skin-classic" style="background-color: #ffff00;"/>
+      <container class="theme-btn" name="btn-skin-neon" style="background-color: #00ff88;"/>
+      <container class="theme-btn" name="btn-skin-ice" style="background-color: #88ddff;"/>
+      <container class="theme-btn" name="btn-skin-fire" style="background-color: #ff4400;"/>
+      <container class="theme-btn" name="btn-skin-ghost" style="background-color: #eeeeff;"/>
+    </container>
     <container class="close-btn" name="btn-settings-close">
       <text class="close-text">CLOSE</text>
     </container>
