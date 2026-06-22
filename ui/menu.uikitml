@@ -1,0 +1,55 @@
+<root>
+  <style>
+    .menu-root {
+      width: 400;
+      height: 350;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20;
+      padding: 30;
+      background-color: rgba(0, 5, 20, 0.92);
+      border-radius: 12;
+      border-width: 2;
+      border-color: #0066ff;
+    }
+    .title {
+      font-size: 36;
+      color: #ffff00;
+      font-weight: bold;
+    }
+    .subtitle {
+      font-size: 14;
+      color: #0088ff;
+    }
+    .btn {
+      width: 200;
+      height: 50;
+      background-color: #0044aa;
+      border-radius: 8;
+      border-width: 1;
+      border-color: #0088ff;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #0066dd;
+    }
+    .btn-text {
+      font-size: 18;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    .controls-text {
+      font-size: 10;
+      color: #668899;
+    }
+  </style>
+  <container class="menu-root">
+    <text class="title">NEON PAC</text>
+    <text class="subtitle">VR Arcade</text>
+    <container class="btn" name="btn-start">
+      <text class="btn-text">START GAME</text>
+    </container>
+    <text class="controls-text">Arrows/WASD or Thumbstick to move</text>
+    <text class="controls-text">Space/A to select - ESC/B to pause</text>
+  </container>
+</root>

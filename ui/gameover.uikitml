@@ -1,0 +1,57 @@
+<root>
+  <style>
+    .go-root {
+      width: 400;
+      height: 320;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16;
+      padding: 30;
+      background-color: rgba(20, 0, 0, 0.92);
+      border-radius: 12;
+      border-width: 2;
+      border-color: #ff2222;
+    }
+    .go-title {
+      font-size: 32;
+      color: #ff4444;
+      font-weight: bold;
+    }
+    .go-score {
+      font-size: 20;
+      color: #ffffff;
+    }
+    .go-level {
+      font-size: 16;
+      color: #aaaaaa;
+    }
+    .btn {
+      width: 180;
+      height: 44;
+      background-color: #440000;
+      border-radius: 8;
+      border-width: 1;
+      border-color: #ff4444;
+      justify-content: center;
+      align-items: center;
+      hover-background-color: #660000;
+    }
+    .btn-text {
+      font-size: 16;
+      color: #ffffff;
+      font-weight: bold;
+    }
+  </style>
+  <container class="go-root">
+    <text class="go-title">GAME OVER</text>
+    <text class="go-score" name="final-score">Score: 0</text>
+    <text class="go-level" name="final-level">Level: 1</text>
+    <container class="btn" name="btn-retry">
+      <text class="btn-text">RETRY</text>
+    </container>
+    <container class="btn" name="btn-menu">
+      <text class="btn-text">MENU</text>
+    </container>
+  </container>
+</root>
