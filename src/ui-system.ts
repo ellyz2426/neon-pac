@@ -115,6 +115,8 @@ export class UISystem extends createSystem({
     this.game.onLivesChange = (lives) => this.updateLives(lives);
     this.game.onLevelChange = (level) => this.updateLevel(level);
     this.game.onStateChange = (state) => this.updateState(state);
+    this.game.onComboDisplay = (text) => this.showCombo(text);
+    this.game.onFruitEaten = (_type, score) => this.showCombo(`+${score}`);
 
     // Achievement notifications
     this.game.achievements.onUnlock = (ach) => this.queueToast(ach);
@@ -446,6 +448,16 @@ export class UISystem extends createSystem({
     this.toastTimer = 3.0;
   }
 
+  // Combo display
+  private comboTimer = 0;
+
+  private showCombo(text: string): void {
+    if (!this.hudDoc) return;
+    const comboEl = this.hudDoc.getElementById('combo-text') as UIKit.Text | undefined;
+    comboEl?.setProperties({ text });
+    this.comboTimer = 1.5;
+  }
+
   // ---- HUD updates ----
   private updateScore(score: number, highScore: number): void {
     if (!this.hudDoc) return;
@@ -466,6 +478,17 @@ export class UISystem extends createSystem({
     if (!this.hudDoc) return;
     const levelEl = this.hudDoc.getElementById('level') as UIKit.Text | undefined;
     levelEl?.setProperties({ text: `LVL ${level}` });
+    // Update mode indicator
+    const modeLabels: Record<GameMode, string> = {
+      [GameMode.CLASSIC]: 'Classic',
+      [GameMode.SPEED]: 'Speed',
+      [GameMode.DARK]: 'Dark',
+      [GameMode.SURVIVAL]: 'Survival',
+      [GameMode.MARATHON]: 'Marathon',
+      [GameMode.ZEN]: 'Zen',
+    };
+    const modeEl = this.hudDoc.getElementById('mode-indicator') as UIKit.Text | undefined;
+    modeEl?.setProperties({ text: modeLabels[this.game.gameMode] ?? 'Classic' });
   }
 
   private updateMenuLabels(): void {
@@ -509,9 +532,23 @@ export class UISystem extends createSystem({
 
     if (showGameOver && this.gameoverDoc) {
       const finalScore = this.gameoverDoc.getElementById('final-score') as UIKit.Text | undefined;
-      finalScore?.setProperties({ text: `Score: ${this.game.score}` });
+      finalScore?.setProperties({ text: String(this.game.score) });
       const finalLevel = this.gameoverDoc.getElementById('final-level') as UIKit.Text | undefined;
-      finalLevel?.setProperties({ text: `Level: ${this.game.level}` });
+      finalLevel?.setProperties({ text: String(this.game.level) });
+      const finalGhosts = this.gameoverDoc.getElementById('final-ghosts') as UIKit.Text | undefined;
+      finalGhosts?.setProperties({ text: String(this.game.statsManager.currentGameGhostsEaten) });
+      const finalDots = this.gameoverDoc.getElementById('final-dots') as UIKit.Text | undefined;
+      finalDots?.setProperties({ text: String(this.game.dotGrid.dotsEaten) });
+      const finalFruits = this.gameoverDoc.getElementById('final-fruits') as UIKit.Text | undefined;
+      finalFruits?.setProperties({ text: String(this.game.statsManager.currentGameFruitsEaten) });
+      const finalTime = this.gameoverDoc.getElementById('final-time') as UIKit.Text | undefined;
+      finalTime?.setProperties({ text: this.game.statsManager.getFormattedTime(this.game.statsManager.currentGameTime) });
+      const newHigh = this.gameoverDoc.getElementById('new-high') as UIKit.Text | undefined;
+      if (this.game.score >= this.game.highScore && this.game.score > 0) {
+        newHigh?.setProperties({ text: 'NEW HIGH SCORE!' });
+      } else {
+        newHigh?.setProperties({ text: '' });
+      }
     }
   }
 
@@ -525,6 +562,15 @@ export class UISystem extends createSystem({
     } else if (this.toastQueue.length > 0) {
       const ach = this.toastQueue.shift()!;
       this.showToast(ach);
+    }
+
+    // Combo text fade
+    if (this.comboTimer > 0) {
+      this.comboTimer -= delta;
+      if (this.comboTimer <= 0 && this.hudDoc) {
+        const comboEl = this.hudDoc.getElementById('combo-text') as UIKit.Text | undefined;
+        comboEl?.setProperties({ text: ' ' });
+      }
     }
   }
 }

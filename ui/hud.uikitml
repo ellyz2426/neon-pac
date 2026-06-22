@@ -1,13 +1,16 @@
 <root>
   <style>
     .hud-root {
-      width: 500;
-      height: 70;
+      width: 520;
+      height: 80;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      padding: 8;
-      background-color: rgba(0, 10, 30, 0.85);
+      padding-left: 12;
+      padding-right: 12;
+      padding-top: 6;
+      padding-bottom: 6;
+      background-color: rgba(0, 10, 30, 0.88);
       border-radius: 8;
       border-width: 1;
       border-color: #0066ff;
@@ -18,11 +21,11 @@
       gap: 2;
     }
     .hud-label {
-      font-size: 10;
+      font-size: 9;
       color: #6688aa;
     }
     .hud-value {
-      font-size: 18;
+      font-size: 16;
       color: #ffffff;
       font-weight: bold;
     }
@@ -32,23 +35,36 @@
       font-weight: bold;
     }
     .hud-lives {
-      font-size: 16;
+      font-size: 14;
       color: #ffff00;
     }
     .hud-high {
-      font-size: 12;
+      font-size: 10;
       color: #88aacc;
+    }
+    .hud-mode {
+      font-size: 9;
+      color: #ffaa00;
+    }
+    .hud-combo {
+      font-size: 14;
+      color: #ff4444;
+      font-weight: bold;
     }
   </style>
   <container class="hud-root">
     <container class="hud-section">
       <text class="hud-label">LEVEL</text>
       <text class="hud-value" name="level">LVL 1</text>
+      <text class="hud-mode" name="mode-indicator">Classic</text>
     </container>
     <container class="hud-section">
       <text class="hud-label">SCORE</text>
       <text class="hud-score" name="score">0</text>
       <text class="hud-high" name="high-score">HI: 0</text>
+    </container>
+    <container class="hud-section">
+      <text class="hud-combo" name="combo-text"> </text>
     </container>
     <container class="hud-section">
       <text class="hud-label">LIVES</text>

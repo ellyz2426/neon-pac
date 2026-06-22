@@ -15,6 +15,8 @@ import { buildMazeGroup, DotGrid } from './maze';
 import { GameManager } from './game';
 import { GameSystem } from './game-system';
 import { UISystem } from './ui-system';
+import { ParticleSystem } from './particle-system';
+import { ParticleManager } from './particles';
 import { MAZE_OFFSET_Y, MazeTheme, THEME_COLORS } from './types';
 
 async function main(): Promise<void> {
@@ -113,9 +115,16 @@ async function main(): Promise<void> {
   // ---- Register systems ----
   world.registerSystem(GameSystem);
   world.registerSystem(UISystem);
+  world.registerSystem(ParticleSystem);
+
+  // Particle manager
+  const particles = new ParticleManager(mazeGroup);
 
   const gameSystem = world.getSystem(GameSystem)!;
   gameSystem.setRefs({ game });
+
+  const particleSystem = world.getSystem(ParticleSystem)!;
+  particleSystem.setRefs({ particles, game });
 
   const uiSystem = world.getSystem(UISystem)!;
   uiSystem.setRefs({

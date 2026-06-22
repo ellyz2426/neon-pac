@@ -1,14 +1,14 @@
 <root>
   <style>
     .go-root {
-      width: 400;
-      height: 320;
+      width: 420;
+      height: 400;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16;
-      padding: 30;
-      background-color: rgba(20, 0, 0, 0.92);
+      gap: 12;
+      padding: 24;
+      background-color: rgba(20, 0, 0, 0.94);
       border-radius: 12;
       border-width: 2;
       border-color: #ff2222;
@@ -19,15 +19,42 @@
       font-weight: bold;
     }
     .go-score {
-      font-size: 20;
+      font-size: 22;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    .go-row {
+      width: 350;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 10;
+      padding-right: 10;
+    }
+    .go-label {
+      font-size: 12;
+      color: #aa6666;
+    }
+    .go-value {
+      font-size: 13;
       color: #ffffff;
     }
-    .go-level {
-      font-size: 16;
-      color: #aaaaaa;
+    .go-new-high {
+      font-size: 14;
+      color: #ffff00;
+      font-weight: bold;
+    }
+    .divider {
+      width: 350;
+      height: 1;
+      background-color: #440000;
+    }
+    .btn-row {
+      flex-direction: row;
+      gap: 12;
     }
     .btn {
-      width: 180;
+      width: 140;
       height: 44;
       background-color: #440000;
       border-radius: 8;
@@ -38,20 +65,44 @@
       hover-background-color: #660000;
     }
     .btn-text {
-      font-size: 16;
+      font-size: 15;
       color: #ffffff;
       font-weight: bold;
     }
   </style>
   <container class="go-root">
     <text class="go-title">GAME OVER</text>
-    <text class="go-score" name="final-score">Score: 0</text>
-    <text class="go-level" name="final-level">Level: 1</text>
-    <container class="btn" name="btn-retry">
-      <text class="btn-text">RETRY</text>
+    <text class="go-new-high" name="new-high">---</text>
+    <text class="go-score" name="final-score">0</text>
+    <container class="divider"/>
+    <container class="go-row">
+      <text class="go-label">Level Reached</text>
+      <text class="go-value" name="final-level">1</text>
     </container>
-    <container class="btn" name="btn-menu">
-      <text class="btn-text">MENU</text>
+    <container class="go-row">
+      <text class="go-label">Ghosts Eaten</text>
+      <text class="go-value" name="final-ghosts">0</text>
+    </container>
+    <container class="go-row">
+      <text class="go-label">Dots Eaten</text>
+      <text class="go-value" name="final-dots">0</text>
+    </container>
+    <container class="go-row">
+      <text class="go-label">Fruits</text>
+      <text class="go-value" name="final-fruits">0</text>
+    </container>
+    <container class="go-row">
+      <text class="go-label">Time</text>
+      <text class="go-value" name="final-time">0:00</text>
+    </container>
+    <container class="divider"/>
+    <container class="btn-row">
+      <container class="btn" name="btn-retry">
+        <text class="btn-text">RETRY</text>
+      </container>
+      <container class="btn" name="btn-menu">
+        <text class="btn-text">MENU</text>
+      </container>
     </container>
   </container>
 </root>
