@@ -112,6 +112,11 @@
         <text class="small-text">Leaderboard</text>
       </container>
     </container>
+    <container class="bottom-row">
+      <container class="small-btn" name="btn-help">
+        <text class="small-text">How to Play</text>
+      </container>
+    </container>
     <text class="controls-text">Arrows/WASD or Thumbstick to move</text>
     <text class="controls-text">Space/A to select - ESC/B to pause</text>
   </container>

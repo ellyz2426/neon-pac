@@ -204,6 +204,22 @@ const ACHIEVEMENT_DEFS: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = [
   { id: 'total_time_10h', title: 'Pac Lifer', description: 'Play for 10 hours total', icon: '[10H]', category: AchievementCategory.MASTERY },
   { id: 'games_250', title: 'Veteran', description: 'Play 250 games', icon: '[250]', category: AchievementCategory.SURVIVAL },
   { id: 'dots_50000', title: 'Dot Singularity', description: 'Eat 50,000 dots total', icon: '[50K]', category: AchievementCategory.MASTERY },
+
+  // ---- Round 6 additions: Power-ups ----
+  { id: 'powerup_first', title: 'Power Player', description: 'Collect your first power-up', icon: '[PU]', category: AchievementCategory.SKILL },
+  { id: 'powerup_10', title: 'Powered Up', description: 'Collect 10 power-ups', icon: '[P10]', category: AchievementCategory.SKILL },
+  { id: 'powerup_25', title: 'Power Addict', description: 'Collect 25 power-ups', icon: '[P25]', category: AchievementCategory.SKILL },
+  { id: 'powerup_50', title: 'Power Hoarder', description: 'Collect 50 power-ups', icon: '[P50]', category: AchievementCategory.MASTERY },
+  { id: 'powerup_100', title: 'Power Overlord', description: 'Collect 100 power-ups', icon: '[POL]', category: AchievementCategory.MASTERY },
+  { id: 'powerup_speed_5', title: 'Speed Junkie', description: 'Collect 5 Speed Boosts', icon: '[SJ]', category: AchievementCategory.SKILL },
+  { id: 'powerup_freeze_5', title: 'Ice Master', description: 'Collect 5 Ghost Freezes', icon: '[IM]', category: AchievementCategory.SKILL },
+  { id: 'powerup_doubler_5', title: 'Double Agent', description: 'Collect 5 Score Doublers', icon: '[DA]', category: AchievementCategory.SKILL },
+  { id: 'powerup_shield_5', title: 'Shield Bearer', description: 'Collect 5 Shields', icon: '[SB]', category: AchievementCategory.SKILL },
+  { id: 'powerup_all_types', title: 'Power Collector', description: 'Collect all 4 power-up types', icon: '[PC]', category: AchievementCategory.MASTERY },
+  { id: 'shield_save', title: 'Close Shave', description: 'Survive a ghost hit with Shield', icon: '[CS]', category: AchievementCategory.SURVIVAL },
+  { id: 'freeze_quad', title: 'Frozen Feast', description: 'Eat 4 ghosts while they are frozen', icon: '[FF]', category: AchievementCategory.GHOST },
+  { id: 'doubler_10k', title: 'Double or Nothing', description: 'Score 10K in one Score Doubler activation', icon: '[DN]', category: AchievementCategory.SCORE },
+  { id: 'speed_l1_30', title: 'Warp Speed', description: 'Clear level 1 in under 30s with Speed Boost', icon: '[WS]', category: AchievementCategory.SPEED },
 ];
 
 const STORAGE_KEY = 'neon-pac-achievements';

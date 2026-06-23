@@ -1,0 +1,792 @@
+{
+  "element": {
+    "sourceTag": "panel",
+    "type": "custom",
+    "children": [
+      {
+        "sourceTag": "text",
+        "type": "custom",
+        "children": [
+          "HOW TO PLAY"
+        ],
+        "properties": {
+          "fontsize": "8",
+          "fontweight": "bold",
+          "color": "#00ccff"
+        },
+        "dataUid": "uid-2"
+      },
+      {
+        "sourceTag": "container",
+        "type": "custom",
+        "children": [
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "CONTROLS"
+            ],
+            "properties": {
+              "fontsize": "5",
+              "fontweight": "bold",
+              "color": "#ffdd00"
+            },
+            "dataUid": "uid-4"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "WASD / Arrow Keys = Move"
+            ],
+            "properties": {
+              "fontsize": "4",
+              "color": "#cccccc"
+            },
+            "dataUid": "uid-5"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "P / Escape = Pause"
+            ],
+            "properties": {
+              "fontsize": "4",
+              "color": "#cccccc"
+            },
+            "dataUid": "uid-6"
+          },
+          {
+            "sourceTag": "text",
+            "type": "custom",
+            "children": [
+              "XR Thumbstick = Move"
+            ],
+            "properties": {
+              "fontsize": "4",
+              "color": "#cccccc"
+            },
+            "dataUid": "uid-7"
+          },
+          {
+            "sourceTag": "container",
+            "type": "custom",
+            "children": [
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "RULES"
+                ],
+                "properties": {
+                  "fontsize": "5",
+                  "fontweight": "bold",
+                  "color": "#ffdd00"
+                },
+                "dataUid": "uid-9"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Eat all dots to clear a level"
+                ],
+                "properties": {
+                  "fontsize": "4",
+                  "color": "#cccccc"
+                },
+                "dataUid": "uid-10"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Power pellets let you eat ghosts"
+                ],
+                "properties": {
+                  "fontsize": "4",
+                  "color": "#cccccc"
+                },
+                "dataUid": "uid-11"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Fruit appears for bonus points"
+                ],
+                "properties": {
+                  "fontsize": "4",
+                  "color": "#cccccc"
+                },
+                "dataUid": "uid-12"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Eat dots fast for streak bonus"
+                ],
+                "properties": {
+                  "fontsize": "4",
+                  "color": "#cccccc"
+                },
+                "dataUid": "uid-13"
+              },
+              {
+                "sourceTag": "container",
+                "type": "custom",
+                "children": [
+                  {
+                    "sourceTag": "text",
+                    "type": "custom",
+                    "children": [
+                      "POWER-UPS"
+                    ],
+                    "properties": {
+                      "fontsize": "5",
+                      "fontweight": "bold",
+                      "color": "#00ff88"
+                    },
+                    "dataUid": "uid-15"
+                  },
+                  {
+                    "sourceTag": "container",
+                    "type": "custom",
+                    "children": [
+                      {
+                        "sourceTag": "container",
+                        "type": "custom",
+                        "children": [
+                          {
+                            "sourceTag": "text",
+                            "type": "custom",
+                            "children": [
+                              "SPEED = Faster movement"
+                            ],
+                            "properties": {
+                              "fontsize": "4",
+                              "color": "#00ff88"
+                            },
+                            "dataUid": "uid-18"
+                          }
+                        ],
+                        "properties": {
+                          "width": "6",
+                          "height": "6",
+                          "backgroundcolor": "#00ff88",
+                          "borderradius": "1"
+                        },
+                        "dataUid": "uid-17"
+                      },
+                      {
+                        "sourceTag": "container",
+                        "type": "custom",
+                        "children": [
+                          {
+                            "sourceTag": "container",
+                            "type": "custom",
+                            "children": [
+                              {
+                                "sourceTag": "text",
+                                "type": "custom",
+                                "children": [
+                                  "FREEZE = Ghosts stop"
+                                ],
+                                "properties": {
+                                  "fontsize": "4",
+                                  "color": "#44ccff"
+                                },
+                                "dataUid": "uid-21"
+                              }
+                            ],
+                            "properties": {
+                              "width": "6",
+                              "height": "6",
+                              "backgroundcolor": "#44ccff",
+                              "borderradius": "1"
+                            },
+                            "dataUid": "uid-20"
+                          },
+                          {
+                            "sourceTag": "container",
+                            "type": "custom",
+                            "children": [
+                              {
+                                "sourceTag": "container",
+                                "type": "custom",
+                                "children": [
+                                  {
+                                    "sourceTag": "text",
+                                    "type": "custom",
+                                    "children": [
+                                      "2x PTS = Double score"
+                                    ],
+                                    "properties": {
+                                      "fontsize": "4",
+                                      "color": "#ffdd00"
+                                    },
+                                    "dataUid": "uid-24"
+                                  }
+                                ],
+                                "properties": {
+                                  "width": "6",
+                                  "height": "6",
+                                  "backgroundcolor": "#ffdd00",
+                                  "borderradius": "1"
+                                },
+                                "dataUid": "uid-23"
+                              },
+                              {
+                                "sourceTag": "container",
+                                "type": "custom",
+                                "children": [
+                                  {
+                                    "sourceTag": "container",
+                                    "type": "custom",
+                                    "children": [
+                                      {
+                                        "sourceTag": "text",
+                                        "type": "custom",
+                                        "children": [
+                                          "SHIELD = Block 1 hit"
+                                        ],
+                                        "properties": {
+                                          "fontsize": "4",
+                                          "color": "#ff44ff"
+                                        },
+                                        "dataUid": "uid-27"
+                                      }
+                                    ],
+                                    "properties": {
+                                      "width": "6",
+                                      "height": "6",
+                                      "backgroundcolor": "#ff44ff",
+                                      "borderradius": "1"
+                                    },
+                                    "dataUid": "uid-26"
+                                  },
+                                  {
+                                    "sourceTag": "container",
+                                    "type": "custom",
+                                    "children": [
+                                      {
+                                        "sourceTag": "text",
+                                        "type": "custom",
+                                        "children": [
+                                          "GHOSTS"
+                                        ],
+                                        "properties": {
+                                          "fontsize": "5",
+                                          "fontweight": "bold",
+                                          "color": "#ffdd00"
+                                        },
+                                        "dataUid": "uid-29"
+                                      },
+                                      {
+                                        "sourceTag": "text",
+                                        "type": "custom",
+                                        "children": [
+                                          "Blinky (Red) = Chases directly"
+                                        ],
+                                        "properties": {
+                                          "fontsize": "4",
+                                          "color": "#ff0000"
+                                        },
+                                        "dataUid": "uid-30"
+                                      },
+                                      {
+                                        "sourceTag": "text",
+                                        "type": "custom",
+                                        "children": [
+                                          "Pinky (Pink) = Ambushes ahead"
+                                        ],
+                                        "properties": {
+                                          "fontsize": "4",
+                                          "color": "#ff69b4"
+                                        },
+                                        "dataUid": "uid-31"
+                                      },
+                                      {
+                                        "sourceTag": "text",
+                                        "type": "custom",
+                                        "children": [
+                                          "Inky (Cyan) = Unpredictable"
+                                        ],
+                                        "properties": {
+                                          "fontsize": "4",
+                                          "color": "#00ffff"
+                                        },
+                                        "dataUid": "uid-32"
+                                      },
+                                      {
+                                        "sourceTag": "text",
+                                        "type": "custom",
+                                        "children": [
+                                          "Clyde (Orange) = Wanders"
+                                        ],
+                                        "properties": {
+                                          "fontsize": "4",
+                                          "color": "#ffa500"
+                                        },
+                                        "dataUid": "uid-33"
+                                      },
+                                      {
+                                        "sourceTag": "container",
+                                        "type": "custom",
+                                        "children": [
+                                          {
+                                            "sourceTag": "text",
+                                            "type": "custom",
+                                            "children": [
+                                              "[ BACK ]"
+                                            ],
+                                            "properties": {
+                                              "id": "help-close-btn",
+                                              "fontsize": "6",
+                                              "fontweight": "bold",
+                                              "color": "#0088ff",
+                                              "cursor": "pointer"
+                                            },
+                                            "dataUid": "uid-35"
+                                          }
+                                        ],
+                                        "properties": {
+                                          "height": "4"
+                                        },
+                                        "dataUid": "uid-34"
+                                      }
+                                    ],
+                                    "properties": {
+                                      "width": "160",
+                                      "height": "1",
+                                      "backgroundcolor": "#003366"
+                                    },
+                                    "dataUid": "uid-28"
+                                  }
+                                ],
+                                "properties": {
+                                  "flexdirection": "row",
+                                  "gap": "2",
+                                  "alignitems": "center"
+                                },
+                                "dataUid": "uid-25"
+                              }
+                            ],
+                            "properties": {
+                              "flexdirection": "row",
+                              "gap": "2",
+                              "alignitems": "center"
+                            },
+                            "dataUid": "uid-22"
+                          }
+                        ],
+                        "properties": {
+                          "flexdirection": "row",
+                          "gap": "2",
+                          "alignitems": "center"
+                        },
+                        "dataUid": "uid-19"
+                      }
+                    ],
+                    "properties": {
+                      "flexdirection": "row",
+                      "gap": "2",
+                      "alignitems": "center"
+                    },
+                    "dataUid": "uid-16"
+                  }
+                ],
+                "properties": {
+                  "width": "160",
+                  "height": "1",
+                  "backgroundcolor": "#003366"
+                },
+                "dataUid": "uid-14"
+              }
+            ],
+            "properties": {
+              "width": "160",
+              "height": "1",
+              "backgroundcolor": "#003366"
+            },
+            "dataUid": "uid-8"
+          }
+        ],
+        "properties": {
+          "width": "160",
+          "height": "1",
+          "backgroundcolor": "#003366"
+        },
+        "dataUid": "uid-3"
+      }
+    ],
+    "properties": {
+      "width": "180",
+      "height": "220",
+      "gap": "4",
+      "padding": "8",
+      "flexdirection": "column",
+      "backgroundcolor": "#0a0a1a",
+      "borderradius": "6",
+      "bordercolor": "#0066ff",
+      "borderwidth": "1",
+      "alignitems": "center"
+    },
+    "dataUid": "uid-1"
+  },
+  "classes": {},
+  "ranges": {
+    "uid-1": {
+      "start": {
+        "line": 0,
+        "column": 0
+      },
+      "end": {
+        "line": 49,
+        "column": 8
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 1,
+        "column": 2
+      },
+      "end": {
+        "line": 1,
+        "column": 73
+      }
+    },
+    "uid-3": {
+      "start": {
+        "line": 3,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-4": {
+      "start": {
+        "line": 5,
+        "column": 2
+      },
+      "end": {
+        "line": 5,
+        "column": 70
+      }
+    },
+    "uid-5": {
+      "start": {
+        "line": 6,
+        "column": 2
+      },
+      "end": {
+        "line": 6,
+        "column": 68
+      }
+    },
+    "uid-6": {
+      "start": {
+        "line": 7,
+        "column": 2
+      },
+      "end": {
+        "line": 7,
+        "column": 62
+      }
+    },
+    "uid-7": {
+      "start": {
+        "line": 8,
+        "column": 2
+      },
+      "end": {
+        "line": 8,
+        "column": 64
+      }
+    },
+    "uid-8": {
+      "start": {
+        "line": 10,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-9": {
+      "start": {
+        "line": 12,
+        "column": 2
+      },
+      "end": {
+        "line": 12,
+        "column": 67
+      }
+    },
+    "uid-10": {
+      "start": {
+        "line": 13,
+        "column": 2
+      },
+      "end": {
+        "line": 13,
+        "column": 73
+      }
+    },
+    "uid-11": {
+      "start": {
+        "line": 14,
+        "column": 2
+      },
+      "end": {
+        "line": 14,
+        "column": 76
+      }
+    },
+    "uid-12": {
+      "start": {
+        "line": 15,
+        "column": 2
+      },
+      "end": {
+        "line": 15,
+        "column": 74
+      }
+    },
+    "uid-13": {
+      "start": {
+        "line": 16,
+        "column": 2
+      },
+      "end": {
+        "line": 16,
+        "column": 74
+      }
+    },
+    "uid-14": {
+      "start": {
+        "line": 18,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-15": {
+      "start": {
+        "line": 20,
+        "column": 2
+      },
+      "end": {
+        "line": 20,
+        "column": 71
+      }
+    },
+    "uid-16": {
+      "start": {
+        "line": 21,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-17": {
+      "start": {
+        "line": 22,
+        "column": 4
+      },
+      "end": {
+        "line": 24,
+        "column": 14
+      }
+    },
+    "uid-18": {
+      "start": {
+        "line": 23,
+        "column": 4
+      },
+      "end": {
+        "line": 23,
+        "column": 69
+      }
+    },
+    "uid-19": {
+      "start": {
+        "line": 25,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-20": {
+      "start": {
+        "line": 26,
+        "column": 4
+      },
+      "end": {
+        "line": 28,
+        "column": 14
+      }
+    },
+    "uid-21": {
+      "start": {
+        "line": 27,
+        "column": 4
+      },
+      "end": {
+        "line": 27,
+        "column": 66
+      }
+    },
+    "uid-22": {
+      "start": {
+        "line": 29,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-23": {
+      "start": {
+        "line": 30,
+        "column": 4
+      },
+      "end": {
+        "line": 32,
+        "column": 14
+      }
+    },
+    "uid-24": {
+      "start": {
+        "line": 31,
+        "column": 4
+      },
+      "end": {
+        "line": 31,
+        "column": 67
+      }
+    },
+    "uid-25": {
+      "start": {
+        "line": 33,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-26": {
+      "start": {
+        "line": 34,
+        "column": 4
+      },
+      "end": {
+        "line": 36,
+        "column": 14
+      }
+    },
+    "uid-27": {
+      "start": {
+        "line": 35,
+        "column": 4
+      },
+      "end": {
+        "line": 35,
+        "column": 66
+      }
+    },
+    "uid-28": {
+      "start": {
+        "line": 38,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-29": {
+      "start": {
+        "line": 40,
+        "column": 2
+      },
+      "end": {
+        "line": 40,
+        "column": 68
+      }
+    },
+    "uid-30": {
+      "start": {
+        "line": 41,
+        "column": 2
+      },
+      "end": {
+        "line": 41,
+        "column": 74
+      }
+    },
+    "uid-31": {
+      "start": {
+        "line": 42,
+        "column": 2
+      },
+      "end": {
+        "line": 42,
+        "column": 73
+      }
+    },
+    "uid-32": {
+      "start": {
+        "line": 43,
+        "column": 2
+      },
+      "end": {
+        "line": 43,
+        "column": 71
+      }
+    },
+    "uid-33": {
+      "start": {
+        "line": 44,
+        "column": 2
+      },
+      "end": {
+        "line": 44,
+        "column": 68
+      }
+    },
+    "uid-34": {
+      "start": {
+        "line": 46,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 0
+      }
+    },
+    "uid-35": {
+      "start": {
+        "line": 48,
+        "column": 2
+      },
+      "end": {
+        "line": 48,
+        "column": 107
+      }
+    }
+  }
+}

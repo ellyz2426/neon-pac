@@ -256,6 +256,35 @@ export const MODE_CONFIGS: Record<GameMode, {
   },
 };
 
+// Power-up types
+export enum PowerUpType {
+  SPEED_BOOST = 'speed_boost',
+  GHOST_FREEZE = 'ghost_freeze',
+  SCORE_DOUBLER = 'score_doubler',
+  SHIELD = 'shield',
+}
+
+export const POWERUP_COLORS: Record<PowerUpType, number> = {
+  [PowerUpType.SPEED_BOOST]: 0x00ff88,
+  [PowerUpType.GHOST_FREEZE]: 0x44ccff,
+  [PowerUpType.SCORE_DOUBLER]: 0xffdd00,
+  [PowerUpType.SHIELD]: 0xff44ff,
+};
+
+export const POWERUP_LABELS: Record<PowerUpType, string> = {
+  [PowerUpType.SPEED_BOOST]: 'SPEED',
+  [PowerUpType.GHOST_FREEZE]: 'FREEZE',
+  [PowerUpType.SCORE_DOUBLER]: '2x PTS',
+  [PowerUpType.SHIELD]: 'SHIELD',
+};
+
+export const POWERUP_DURATIONS: Record<PowerUpType, number> = {
+  [PowerUpType.SPEED_BOOST]: 5,
+  [PowerUpType.GHOST_FREEZE]: 3,
+  [PowerUpType.SCORE_DOUBLER]: 8,
+  [PowerUpType.SHIELD]: 0, // single-use, no timer
+};
+
 // Maze themes
 export enum MazeTheme {
   NEON_BLUE = 'neon_blue',

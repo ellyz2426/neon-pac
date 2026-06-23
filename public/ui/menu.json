@@ -206,6 +206,38 @@
             "dataUid": "uid-16"
           },
           {
+            "sourceTag": "container",
+            "type": "custom",
+            "children": [
+              {
+                "sourceTag": "container",
+                "type": "custom",
+                "children": [
+                  {
+                    "sourceTag": "text",
+                    "type": "custom",
+                    "children": [
+                      "How to Play"
+                    ],
+                    "properties": {
+                      "class": "small-text"
+                    },
+                    "dataUid": "uid-23"
+                  }
+                ],
+                "properties": {
+                  "class": "small-btn",
+                  "name": "btn-help"
+                },
+                "dataUid": "uid-22"
+              }
+            ],
+            "properties": {
+              "class": "bottom-row"
+            },
+            "dataUid": "uid-21"
+          },
+          {
             "sourceTag": "text",
             "type": "custom",
             "children": [
@@ -214,7 +246,7 @@
             "properties": {
               "class": "controls-text"
             },
-            "dataUid": "uid-21"
+            "dataUid": "uid-24"
           },
           {
             "sourceTag": "text",
@@ -225,7 +257,7 @@
             "properties": {
               "class": "controls-text"
             },
-            "dataUid": "uid-22"
+            "dataUid": "uid-25"
           }
         ],
         "properties": {
@@ -356,7 +388,7 @@
         "column": 0
       },
       "end": {
-        "line": 117,
+        "line": 122,
         "column": 7
       }
     },
@@ -496,7 +528,7 @@
         "column": 2
       },
       "end": {
-        "line": 116,
+        "line": 121,
         "column": 14
       }
     },
@@ -686,17 +718,47 @@
         "column": 4
       },
       "end": {
-        "line": 114,
-        "column": 72
+        "line": 118,
+        "column": 16
       }
     },
     "uid-22": {
       "start": {
         "line": 115,
+        "column": 6
+      },
+      "end": {
+        "line": 117,
+        "column": 18
+      }
+    },
+    "uid-23": {
+      "start": {
+        "line": 116,
+        "column": 8
+      },
+      "end": {
+        "line": 116,
+        "column": 51
+      }
+    },
+    "uid-24": {
+      "start": {
+        "line": 119,
         "column": 4
       },
       "end": {
-        "line": 115,
+        "line": 119,
+        "column": 72
+      }
+    },
+    "uid-25": {
+      "start": {
+        "line": 120,
+        "column": 4
+      },
+      "end": {
+        "line": 120,
         "column": 73
       }
     }

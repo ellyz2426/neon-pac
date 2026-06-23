@@ -54,6 +54,8 @@ import { AudioManager } from './audio-manager';
 import { AchievementManager } from './achievements';
 import { StatsManager } from './stats-manager';
 import { LeaderboardManager } from './leaderboard';
+import { PowerUpManager } from './powerup-manager';
+import { PowerUpType, POWERUP_LABELS } from './types';
 
 interface Ghost {
   name: GhostName;
@@ -156,6 +158,7 @@ export class GameManager {
   achievements: AchievementManager;
   statsManager: StatsManager;
   leaderboard: LeaderboardManager;
+  powerUps: PowerUpManager;
 
   // Fright timer info for HUD display
   get frightTimerRemaining(): number { return this.frightTimer; }
@@ -194,6 +197,10 @@ export class GameManager {
   onLevelFlash?: () => void;
   // Camera shake callback
   onCameraShake?: (intensity: number) => void;
+  // Power-up display callback
+  onPowerUpCollected?: (type: PowerUpType, label: string) => void;
+  onPowerUpExpired?: (type: PowerUpType) => void;
+  onShieldUsed?: () => void;
 
   // Callbacks
   onScoreChange?: (score: number, highScore: number) => void;
@@ -225,6 +232,25 @@ export class GameManager {
     this.achievements = new AchievementManager();
     this.statsManager = new StatsManager();
     this.leaderboard = new LeaderboardManager();
+    this.powerUps = new PowerUpManager(mazeGroup);
+
+    // Wire power-up callbacks
+    this.powerUps.onPowerUpCollected = (type) => {
+      this.audio.playPowerUpCollect();
+      if (type === PowerUpType.GHOST_FREEZE) {
+        this.audio.playGhostFreeze();
+      }
+      this.onPowerUpCollected?.(type, POWERUP_LABELS[type]);
+      this.checkPowerUpAchievements();
+    };
+    this.powerUps.onEffectExpired = (type) => {
+      this.audio.playPowerUpExpire();
+      this.onPowerUpExpired?.(type);
+    };
+    this.powerUps.onShieldUsed = () => {
+      this.audio.playShieldBlock();
+      this.onShieldUsed?.();
+    };
 
     // Load high score & skin
     try {
@@ -357,6 +383,9 @@ export class GameManager {
     this.sirenLevel = 0;
     this.frightFlashTimer = 0;
     this.frightFlashWhite = false;
+
+    // Reset power-ups
+    this.powerUps.reset();
 
     // Zen mode: hide ghosts
     if (this.gameMode === GameMode.ZEN) {
@@ -615,6 +644,7 @@ export class GameManager {
     const modeCfg = MODE_CONFIGS[this.gameMode];
     const speedMult = modeCfg.speedMult;
     const marathonGhostBoost = this.gameMode === GameMode.MARATHON ? (this.level - 1) * 0.15 : 0;
+    const speedBoostMult = this.powerUps.hasSpeedBoost() ? 1.5 : 1.0;
 
     if (this.gameMode !== GameMode.ZEN) {
       this.updateScatterChase(delta);
@@ -647,11 +677,14 @@ export class GameManager {
       }
     }
 
-    this.updatePacMan(delta * speedMult);
+    this.updatePacMan(delta * speedMult * speedBoostMult);
 
     if (this.gameMode !== GameMode.ZEN) {
+      const ghostFrozen = this.powerUps.hasGhostFreeze();
       for (const ghost of this.ghosts) {
-        this.updateGhost(ghost, delta * speedMult, marathonGhostBoost);
+        if (!ghostFrozen) {
+          this.updateGhost(ghost, delta * speedMult, marathonGhostBoost);
+        }
       }
     }
 
@@ -659,6 +692,13 @@ export class GameManager {
     this.updateMeshPositions();
     this.checkDotCollection();
     this.checkFruitCollection();
+
+    // Power-ups: update spawn/timers, check collection
+    this.powerUps.update(delta, this.level, true);
+    const collected = this.powerUps.checkCollection(this.pacCol, this.pacRow);
+    if (collected !== null) {
+      this.onComboDisplay?.(POWERUP_LABELS[collected] + '!');
+    }
 
     if (this.gameMode !== GameMode.ZEN) {
       this.checkGhostCollisions();
@@ -986,12 +1026,14 @@ export class GameManager {
       if (mesh) mesh.visible = false;
 
       if (isPower) {
-        this.score += POWER_PELLET_SCORE;
+        const powerScore = POWER_PELLET_SCORE * (this.powerUps.hasScoreDoubler() ? 2 : 1);
+        this.score += powerScore;
         this.startFrightened();
         this.audio.playPowerPellet();
         this.statsManager.recordPowerPellet();
       } else {
-        const streakBonus = DOT_SCORE * this.dotStreakMultiplier;
+        const doubler = this.powerUps.hasScoreDoubler() ? 2 : 1;
+        const streakBonus = DOT_SCORE * this.dotStreakMultiplier * doubler;
         this.score += streakBonus;
         this.advanceDotStreak();
         this.statsManager.recordDotEaten();
@@ -1043,6 +1085,15 @@ export class GameManager {
             this.achievements.unlock('close_call');
           }
         } else {
+          // Shield check: absorb one hit
+          if (this.powerUps.consumeShield()) {
+            // Shield absorbed the hit — scatter this ghost instead
+            ghost.mode = GhostMode.EATEN;
+            this.setGhostColor(ghost, EATEN_COLOR);
+            this.onComboDisplay?.('SHIELD!');
+            this.achievements.unlock('shield_save');
+            continue;
+          }
           this.lives--;
           this.statsManager.recordDeath();
           this.levelsWithoutDeath = 0;
@@ -1329,6 +1380,27 @@ export class GameManager {
     if (this.lives === 1) this.achievements.unlock('comeback');
   }
 
+  // ---- Power-Up Achievements ----
+  private checkPowerUpAchievements(): void {
+    const total = this.powerUps.getTotalCollected();
+    if (total >= 1) this.achievements.unlock('powerup_first');
+    if (total >= 10) this.achievements.unlock('powerup_10');
+    if (total >= 25) this.achievements.unlock('powerup_25');
+    if (total >= 50) this.achievements.unlock('powerup_50');
+    if (total >= 100) this.achievements.unlock('powerup_100');
+
+    if (this.powerUps.getCollectedByType(PowerUpType.SPEED_BOOST) >= 5) this.achievements.unlock('powerup_speed_5');
+    if (this.powerUps.getCollectedByType(PowerUpType.GHOST_FREEZE) >= 5) this.achievements.unlock('powerup_freeze_5');
+    if (this.powerUps.getCollectedByType(PowerUpType.SCORE_DOUBLER) >= 5) this.achievements.unlock('powerup_doubler_5');
+    if (this.powerUps.getCollectedByType(PowerUpType.SHIELD) >= 5) this.achievements.unlock('powerup_shield_5');
+
+    // Collector: use all 4 types
+    const types = [PowerUpType.SPEED_BOOST, PowerUpType.GHOST_FREEZE, PowerUpType.SCORE_DOUBLER, PowerUpType.SHIELD];
+    if (types.every((t) => this.powerUps.getCollectedByType(t) > 0)) {
+      this.achievements.unlock('powerup_all_types');
+    }
+  }
+
   // ---- Ghost House Bobbing ----
   private updateGhostHouseBob(delta: number): void {
     this.ghostHouseBobTimer += delta * 3;
@@ -1409,6 +1481,7 @@ export class GameManager {
     this.leaderboard.addEntry(this.score, this.level, this.gameMode, this.difficulty);
 
     this.removeFruit();
+    this.powerUps.removePowerUp();
     this.onStateChange?.(this.state);
 
     if (this.darkLight) {
@@ -1429,6 +1502,7 @@ export class GameManager {
   returnToMenu(): void {
     this.state = GameState.MENU;
     this.removeFruit();
+    this.powerUps.removePowerUp();
     if (this.darkLight) this.darkLight.visible = false;
 
     // Reset to classic maze for menu view

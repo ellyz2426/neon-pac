@@ -184,6 +184,20 @@
                   "name": "combo-text"
                 },
                 "dataUid": "uid-19"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [],
+                "properties": {
+                  "name": "powerup-status",
+                  "style": {
+                    "fontSize": "10",
+                    "color": "#00ff88",
+                    "fontWeight": "bold"
+                  }
+                },
+                "dataUid": "uid-20"
               }
             ],
             "properties": {
@@ -204,7 +218,7 @@
                 "properties": {
                   "class": "hud-label"
                 },
-                "dataUid": "uid-21"
+                "dataUid": "uid-22"
               },
               {
                 "sourceTag": "text",
@@ -216,13 +230,13 @@
                   "class": "hud-lives",
                   "name": "lives"
                 },
-                "dataUid": "uid-22"
+                "dataUid": "uid-23"
               }
             ],
             "properties": {
               "class": "hud-section"
             },
-            "dataUid": "uid-20"
+            "dataUid": "uid-21"
           }
         ],
         "properties": {
@@ -354,7 +368,7 @@
         "column": 0
       },
       "end": {
-        "line": 112,
+        "line": 113,
         "column": 7
       }
     },
@@ -514,7 +528,7 @@
         "column": 2
       },
       "end": {
-        "line": 111,
+        "line": 112,
         "column": 14
       }
     },
@@ -674,7 +688,7 @@
         "column": 4
       },
       "end": {
-        "line": 106,
+        "line": 107,
         "column": 16
       }
     },
@@ -690,22 +704,22 @@
     },
     "uid-20": {
       "start": {
-        "line": 107,
-        "column": 4
+        "line": 106,
+        "column": 6
       },
       "end": {
-        "line": 110,
-        "column": 16
+        "line": 106,
+        "column": 100
       }
     },
     "uid-21": {
       "start": {
         "line": 108,
-        "column": 6
+        "column": 4
       },
       "end": {
-        "line": 108,
-        "column": 42
+        "line": 111,
+        "column": 16
       }
     },
     "uid-22": {
@@ -715,6 +729,16 @@
       },
       "end": {
         "line": 109,
+        "column": 42
+      }
+    },
+    "uid-23": {
+      "start": {
+        "line": 110,
+        "column": 6
+      },
+      "end": {
+        "line": 110,
         "column": 55
       }
     }

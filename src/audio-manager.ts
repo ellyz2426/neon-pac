@@ -361,6 +361,84 @@ export class AudioManager {
     osc.stop(t + 0.4);
   }
 
+  // ---- Power-up sounds ----
+  playPowerUpCollect(): void {
+    const ctx = this.getCtx();
+    const t = ctx.currentTime;
+    // Bright magical shimmer
+    const notes = [880, 1100, 1320, 1760];
+    for (let i = 0; i < notes.length; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      const st = t + i * 0.06;
+      osc.frequency.setValueAtTime(notes[i], st);
+      gain.gain.setValueAtTime(0.18, st);
+      gain.gain.exponentialRampToValueAtTime(0.001, st + 0.12);
+      osc.connect(gain);
+      gain.connect(this.getMaster());
+      osc.start(st);
+      osc.stop(st + 0.15);
+    }
+  }
+
+  playPowerUpExpire(): void {
+    const ctx = this.getCtx();
+    const t = ctx.currentTime;
+    // Descending fade
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(600, t);
+    osc.frequency.exponentialRampToValueAtTime(150, t + 0.3);
+    gain.gain.setValueAtTime(0.1, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+    osc.connect(gain);
+    gain.connect(this.getMaster());
+    osc.start(t);
+    osc.stop(t + 0.4);
+  }
+
+  playShieldBlock(): void {
+    const ctx = this.getCtx();
+    const t = ctx.currentTime;
+    // Metallic clang
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc1.type = 'square';
+    osc2.type = 'sine';
+    osc1.frequency.setValueAtTime(300, t);
+    osc2.frequency.setValueAtTime(450, t);
+    gain.gain.setValueAtTime(0.2, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.getMaster());
+    osc1.start(t);
+    osc2.start(t);
+    osc1.stop(t + 0.3);
+    osc2.stop(t + 0.3);
+  }
+
+  playGhostFreeze(): void {
+    const ctx = this.getCtx();
+    const t = ctx.currentTime;
+    // Ice crystallize sound
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2000, t);
+    osc.frequency.exponentialRampToValueAtTime(500, t + 0.2);
+    osc.frequency.exponentialRampToValueAtTime(1500, t + 0.4);
+    gain.gain.setValueAtTime(0.12, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    osc.connect(gain);
+    gain.connect(this.getMaster());
+    osc.start(t);
+    osc.stop(t + 0.55);
+  }
+
   // ---- Streak combo sound ----
   playStreakUp(multiplier: number): void {
     const ctx = this.getCtx();

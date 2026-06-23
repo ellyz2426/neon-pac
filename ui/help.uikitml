@@ -1,0 +1,50 @@
+<panel width="180" height="220" gap="4" padding="8" flexDirection="column" backgroundColor="#0a0a1a" borderRadius="6" borderColor="#0066ff" borderWidth="1" alignItems="center">
+  <text fontSize="8" fontWeight="bold" color="#00ccff">HOW TO PLAY</text>
+
+  <container width="160" height="1" backgroundColor="#003366" />
+
+  <text fontSize="5" fontWeight="bold" color="#ffdd00">CONTROLS</text>
+  <text fontSize="4" color="#cccccc">WASD / Arrow Keys = Move</text>
+  <text fontSize="4" color="#cccccc">P / Escape = Pause</text>
+  <text fontSize="4" color="#cccccc">XR Thumbstick = Move</text>
+
+  <container width="160" height="1" backgroundColor="#003366" />
+
+  <text fontSize="5" fontWeight="bold" color="#ffdd00">RULES</text>
+  <text fontSize="4" color="#cccccc">Eat all dots to clear a level</text>
+  <text fontSize="4" color="#cccccc">Power pellets let you eat ghosts</text>
+  <text fontSize="4" color="#cccccc">Fruit appears for bonus points</text>
+  <text fontSize="4" color="#cccccc">Eat dots fast for streak bonus</text>
+
+  <container width="160" height="1" backgroundColor="#003366" />
+
+  <text fontSize="5" fontWeight="bold" color="#00ff88">POWER-UPS</text>
+  <container flexDirection="row" gap="2" alignItems="center">
+    <container width="6" height="6" backgroundColor="#00ff88" borderRadius="1" />
+    <text fontSize="4" color="#00ff88">SPEED = Faster movement</text>
+  </container>
+  <container flexDirection="row" gap="2" alignItems="center">
+    <container width="6" height="6" backgroundColor="#44ccff" borderRadius="1" />
+    <text fontSize="4" color="#44ccff">FREEZE = Ghosts stop</text>
+  </container>
+  <container flexDirection="row" gap="2" alignItems="center">
+    <container width="6" height="6" backgroundColor="#ffdd00" borderRadius="1" />
+    <text fontSize="4" color="#ffdd00">2x PTS = Double score</text>
+  </container>
+  <container flexDirection="row" gap="2" alignItems="center">
+    <container width="6" height="6" backgroundColor="#ff44ff" borderRadius="1" />
+    <text fontSize="4" color="#ff44ff">SHIELD = Block 1 hit</text>
+  </container>
+
+  <container width="160" height="1" backgroundColor="#003366" />
+
+  <text fontSize="5" fontWeight="bold" color="#ffdd00">GHOSTS</text>
+  <text fontSize="4" color="#ff0000">Blinky (Red) = Chases directly</text>
+  <text fontSize="4" color="#ff69b4">Pinky (Pink) = Ambushes ahead</text>
+  <text fontSize="4" color="#00ffff">Inky (Cyan) = Unpredictable</text>
+  <text fontSize="4" color="#ffa500">Clyde (Orange) = Wanders</text>
+
+  <container height="4" />
+
+  <text id="help-close-btn" fontSize="6" fontWeight="bold" color="#0088ff" cursor="pointer">[ BACK ]</text>
+</panel>

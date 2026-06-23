@@ -104,6 +104,7 @@
     </container>
     <container class="hud-section">
       <text class="hud-combo" name="combo-text"> </text>
+      <text name="powerup-status" style="font-size: 10; color: #00ff88; font-weight: bold;"> </text>
     </container>
     <container class="hud-section">
       <text class="hud-label">LIVES</text>

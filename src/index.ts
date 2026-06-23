@@ -122,6 +122,13 @@ async function main(): Promise<void> {
   leaderboardEntity.object3D!.visible = false;
   leaderboardEntity.addComponent(PanelUI, { config: './ui/leaderboard.json' });
 
+  // Help panel
+  const helpEntity = world.createTransformEntity();
+  helpEntity.object3D!.position.set(0, MAZE_OFFSET_Y + 0.5, -0.3);
+  helpEntity.object3D!.rotation.x = -0.3;
+  helpEntity.object3D!.visible = false;
+  helpEntity.addComponent(PanelUI, { config: './ui/help.json' });
+
   // ---- Register systems ----
   world.registerSystem(GameSystem);
   world.registerSystem(UISystem);
@@ -149,6 +156,7 @@ async function main(): Promise<void> {
     statsEntity,
     toastEntity,
     leaderboardEntity,
+    helpEntity,
   });
 
   // Theme change handler

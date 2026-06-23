@@ -9,7 +9,7 @@ import {
   eq,
 } from '@iwsdk/core';
 import { GameManager } from './game';
-import { GameState, GameMode, Difficulty, MazeTheme, DIFFICULTY_MODS } from './types';
+import { GameState, GameMode, Difficulty, MazeTheme, DIFFICULTY_MODS, PowerUpType, POWERUP_LABELS } from './types';
 import { PacSkin, PAC_SKIN_NAMES } from './maze';
 import type { Achievement } from './achievements';
 
@@ -54,6 +54,10 @@ export class UISystem extends createSystem({
     required: [PanelUI, PanelDocument],
     where: [eq(PanelUI, 'config', './ui/leaderboard.json')],
   },
+  help: {
+    required: [PanelUI, PanelDocument],
+    where: [eq(PanelUI, 'config', './ui/help.json')],
+  },
 }) {
   private game!: GameManager;
 
@@ -68,6 +72,7 @@ export class UISystem extends createSystem({
   private statsEntity: any = null;
   private toastEntity: any = null;
   private leaderboardEntity: any = null;
+  private helpEntity: any = null;
 
   // Doc refs
   private hudDoc: UIKitDocument | null = null;
@@ -80,6 +85,7 @@ export class UISystem extends createSystem({
   private statsDoc: UIKitDocument | null = null;
   private toastDoc: UIKitDocument | null = null;
   private leaderboardDoc: UIKitDocument | null = null;
+  private helpDoc: UIKitDocument | null = null;
 
   // Achievement page state
   private achPage = 0;
@@ -112,6 +118,7 @@ export class UISystem extends createSystem({
     statsEntity: any;
     toastEntity: any;
     leaderboardEntity: any;
+    helpEntity: any;
   }): void {
     this.game = refs.game;
     this.hudEntity = refs.hudEntity;
@@ -124,6 +131,7 @@ export class UISystem extends createSystem({
     this.statsEntity = refs.statsEntity;
     this.toastEntity = refs.toastEntity;
     this.leaderboardEntity = refs.leaderboardEntity;
+    this.helpEntity = refs.helpEntity;
 
     // Register game callbacks
     this.game.onScoreChange = (score, highScore) => this.updateScore(score, highScore);
@@ -188,6 +196,13 @@ export class UISystem extends createSystem({
       lbBtn?.addEventListener('click', () => {
         this.game.audio.playMenuSelect();
         this.showOverlay('leaderboard');
+      });
+
+      // Help button
+      const helpBtn = doc.getElementById('btn-help') as UIKit.Text | undefined;
+      helpBtn?.addEventListener('click', () => {
+        this.game.audio.playMenuSelect();
+        this.showOverlay('help');
       });
     });
 
@@ -414,6 +429,19 @@ export class UISystem extends createSystem({
         this.hideOverlay();
       });
     });
+
+    // Help panel ready
+    this.queries.help.subscribe('qualify', (entity) => {
+      const doc = entity.getValue(PanelDocument, 'document') as UIKitDocument | undefined;
+      if (!doc) return;
+      this.helpDoc = doc;
+
+      const closeBtn = doc.getElementById('help-close-btn') as UIKit.Text | undefined;
+      closeBtn?.addEventListener('click', () => {
+        this.game.audio.playMenuSelect();
+        this.hideOverlay();
+      });
+    });
   }
 
   // ---- Overlays ----
@@ -438,6 +466,9 @@ export class UISystem extends createSystem({
       this.lbFilter = 'all';
       this.renderLeaderboard();
     }
+    if (name === 'help' && this.helpEntity?.object3D) {
+      this.helpEntity.object3D.visible = true;
+    }
   }
 
   private hideOverlay(): void {
@@ -446,6 +477,7 @@ export class UISystem extends createSystem({
     if (this.settingsEntity?.object3D) this.settingsEntity.object3D.visible = false;
     if (this.statsEntity?.object3D) this.statsEntity.object3D.visible = false;
     if (this.leaderboardEntity?.object3D) this.leaderboardEntity.object3D.visible = false;
+    if (this.helpEntity?.object3D) this.helpEntity.object3D.visible = false;
 
     if (this.game.state === GameState.MENU && this.menuEntity?.object3D) {
       this.menuEntity.object3D.visible = true;
@@ -742,6 +774,22 @@ export class UISystem extends createSystem({
         streakEl?.setProperties({ text: `${streakMult}x STREAK` });
       } else {
         streakEl?.setProperties({ text: ' ' });
+      }
+
+      // Power-up status display
+      const puStatusEl = this.hudDoc.getElementById('powerup-status') as UIKit.Text | undefined;
+      if (puStatusEl) {
+        const activeEffects = this.game.powerUps.getActiveEffectInfo();
+        if (activeEffects.length > 0) {
+          const parts = activeEffects.map((e) => {
+            const label = POWERUP_LABELS[e.type];
+            if (e.remaining < 0) return label; // shield (no timer)
+            return `${label} ${Math.ceil(e.remaining)}s`;
+          });
+          puStatusEl.setProperties({ text: parts.join(' | ') });
+        } else {
+          puStatusEl.setProperties({ text: ' ' });
+        }
       }
     }
   }
