@@ -12,6 +12,7 @@ export class ParticleSystem extends createSystem({}) {
   private lastScore = 0;
   private lastGhostsEaten = 0;
   private lastFruitsEaten = 0;
+  private ghostTrailTimer = 0;
 
   setRefs(refs: { particles: ParticleManager; game: GameManager }): void {
     this.particles = refs.particles;
@@ -65,5 +66,19 @@ export class ParticleSystem extends createSystem({}) {
     }
 
     this.lastScore = this.game.score;
+
+    // Ghost trail effects during play
+    if (state === GameState.PLAYING) {
+      this.ghostTrailTimer += delta;
+      if (this.ghostTrailTimer >= 0.12) {
+        this.ghostTrailTimer = 0;
+        for (const ghost of this.game.ghosts) {
+          if (ghost.mode === ('house' as any) || ghost.mode === ('eaten' as any)) continue;
+          if (!ghost.mesh.visible) continue;
+          const pos = ghost.mesh.position.clone();
+          this.particles.ghostTrail(pos, ghost.originalColor);
+        }
+      }
+    }
   }
 }

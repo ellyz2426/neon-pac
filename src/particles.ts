@@ -81,6 +81,26 @@ export class ParticleManager {
     this.burst(position, 0xffffff, 4, 0.3);
   }
 
+  // Ghost trail effect - small fading particle behind ghost
+  ghostTrail(position: Vector3, ghostColor: number): void {
+    const mesh = this.getMesh(ghostColor);
+    mesh.position.copy(position);
+    mesh.position.y += 0.01;
+    // Slight random offset
+    mesh.position.x += (Math.random() - 0.5) * 0.01;
+    mesh.position.z += (Math.random() - 0.5) * 0.01;
+    mesh.visible = true;
+    mesh.scale.setScalar(0.6);
+
+    const life = 0.4 + Math.random() * 0.2;
+    this.particles.push({
+      mesh,
+      velocity: new Vector3(0, 0.05, 0),
+      life,
+      maxLife: life,
+    });
+  }
+
   update(delta: number): void {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];

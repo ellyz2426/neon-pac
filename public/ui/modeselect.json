@@ -235,19 +235,58 @@
                 "sourceTag": "text",
                 "type": "custom",
                 "children": [
+                  "Daily"
+                ],
+                "properties": {
+                  "class": "mode-label",
+                  "style": {
+                    "color": "#ffaa00"
+                  }
+                },
+                "dataUid": "uid-24"
+              },
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
+                  "Unique challenge every day"
+                ],
+                "properties": {
+                  "class": "mode-desc"
+                },
+                "dataUid": "uid-25"
+              }
+            ],
+            "properties": {
+              "class": "mode-btn",
+              "name": "btn-daily",
+              "style": {
+                "borderColor": "#ffaa00"
+              }
+            },
+            "dataUid": "uid-23"
+          },
+          {
+            "sourceTag": "container",
+            "type": "custom",
+            "children": [
+              {
+                "sourceTag": "text",
+                "type": "custom",
+                "children": [
                   "BACK"
                 ],
                 "properties": {
                   "class": "back-text"
                 },
-                "dataUid": "uid-24"
+                "dataUid": "uid-27"
               }
             ],
             "properties": {
               "class": "back-btn",
               "name": "btn-back-mode"
             },
-            "dataUid": "uid-23"
+            "dataUid": "uid-26"
           }
         ],
         "properties": {
@@ -343,7 +382,7 @@
         "column": 0
       },
       "end": {
-        "line": 93,
+        "line": 97,
         "column": 7
       }
     },
@@ -433,7 +472,7 @@
         "column": 2
       },
       "end": {
-        "line": 92,
+        "line": 96,
         "column": 14
       }
     },
@@ -643,7 +682,7 @@
         "column": 4
       },
       "end": {
-        "line": 91,
+        "line": 92,
         "column": 16
       }
     },
@@ -654,6 +693,36 @@
       },
       "end": {
         "line": 90,
+        "column": 67
+      }
+    },
+    "uid-25": {
+      "start": {
+        "line": 91,
+        "column": 6
+      },
+      "end": {
+        "line": 91,
+        "column": 63
+      }
+    },
+    "uid-26": {
+      "start": {
+        "line": 93,
+        "column": 4
+      },
+      "end": {
+        "line": 95,
+        "column": 16
+      }
+    },
+    "uid-27": {
+      "start": {
+        "line": 94,
+        "column": 6
+      },
+      "end": {
+        "line": 94,
         "column": 41
       }
     }

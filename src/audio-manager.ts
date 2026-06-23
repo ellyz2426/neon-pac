@@ -4,6 +4,9 @@ export class AudioManager {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private muted = false;
+  private ambientOsc: OscillatorNode | null = null;
+  private ambientGain: GainNode | null = null;
+  private ambientRunning = false;
 
   private getCtx(): AudioContext {
     if (!this.ctx) {
@@ -221,5 +224,66 @@ export class AudioManager {
     shimmerGain.connect(this.getMaster());
     shimmer.start(t + 0.3);
     shimmer.stop(t + 0.8);
+  }
+
+  startAmbient(): void {
+    if (this.ambientRunning) return;
+    const ctx = this.getCtx();
+    this.ambientGain = ctx.createGain();
+    this.ambientGain.gain.value = 0;
+    this.ambientGain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 1);
+    this.ambientGain.connect(this.getMaster());
+
+    // Deep bass drone
+    this.ambientOsc = ctx.createOscillator();
+    this.ambientOsc.type = 'sine';
+    this.ambientOsc.frequency.value = 55; // Low A
+    this.ambientOsc.connect(this.ambientGain);
+    this.ambientOsc.start();
+
+    // Add a subtle modulator for movement
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.3;
+    lfoGain.gain.value = 8;
+    lfo.connect(lfoGain);
+    lfoGain.connect(this.ambientOsc.frequency);
+    lfo.start();
+
+    this.ambientRunning = true;
+  }
+
+  stopAmbient(): void {
+    if (!this.ambientRunning) return;
+    if (this.ambientGain) {
+      const ctx = this.getCtx();
+      this.ambientGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
+    }
+    setTimeout(() => {
+      if (this.ambientOsc) {
+        try { this.ambientOsc.stop(); } catch { /* ignore */ }
+        this.ambientOsc = null;
+      }
+      this.ambientGain = null;
+      this.ambientRunning = false;
+    }, 600);
+  }
+
+  playLevelFlash(): void {
+    const ctx = this.getCtx();
+    const t = ctx.currentTime;
+    // Quick bright ascending sweep
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(200, t);
+    osc.frequency.exponentialRampToValueAtTime(1600, t + 0.3);
+    gain.gain.setValueAtTime(0.15, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    osc.connect(gain);
+    gain.connect(this.getMaster());
+    osc.start(t);
+    osc.stop(t + 0.45);
   }
 }

@@ -1,8 +1,8 @@
 <root>
   <style>
     .hud-root {
-      width: 520;
-      height: 80;
+      width: 560;
+      height: 90;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
@@ -51,6 +51,31 @@
       color: #ff4444;
       font-weight: bold;
     }
+    .fright-section {
+      flex-direction: column;
+      align-items: center;
+      gap: 1;
+    }
+    .fright-label {
+      font-size: 8;
+      color: #4444ff;
+    }
+    .fright-timer {
+      font-size: 18;
+      color: #4466ff;
+      font-weight: bold;
+    }
+    .fright-bar-bg {
+      width: 50;
+      height: 4;
+      background-color: #112244;
+      border-radius: 2;
+    }
+    .fright-bar-fill {
+      height: 4;
+      background-color: #4466ff;
+      border-radius: 2;
+    }
   </style>
   <container class="hud-root">
     <container class="hud-section">
@@ -63,6 +88,13 @@
       <text class="hud-label">SCORE</text>
       <text class="hud-score" name="score">0</text>
       <text class="hud-high" name="high-score">HI: 0</text>
+    </container>
+    <container class="fright-section" name="fright-section">
+      <text class="fright-label">POWER</text>
+      <text class="fright-timer" name="fright-timer"> </text>
+      <container class="fright-bar-bg">
+        <container class="fright-bar-fill" name="fright-bar"> </container>
+      </container>
     </container>
     <container class="hud-section">
       <text class="hud-combo" name="combo-text"> </text>

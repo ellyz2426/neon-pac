@@ -49,7 +49,7 @@ import {
   PacSkin,
   PAC_SKIN_COLORS,
 } from './maze';
-import { getMazeForLevel, MAZE_NAMES } from './maze-layouts';
+import { getMazeForLevel, MAZE_NAMES, ALL_MAZES } from './maze-layouts';
 import { AudioManager } from './audio-manager';
 import { AchievementManager } from './achievements';
 import { StatsManager } from './stats-manager';
@@ -157,6 +157,25 @@ export class GameManager {
   statsManager: StatsManager;
   leaderboard: LeaderboardManager;
 
+  // Fright timer info for HUD display
+  get frightTimerRemaining(): number { return this.frightTimer; }
+  get frightTimerMax(): number {
+    return DIFFICULTY_MODS[this.difficulty].frightDuration;
+  }
+
+  // Daily Challenge tracking
+  private dailyChallengesCompleted = 0;
+  private extraLivesThisGame = 0;
+  private skinsUsed = new Set<string>();
+  private themesUsed = new Set<string>();
+  private difficultiesUsed = new Set<string>();
+  private mazesVisited = new Set<string>();
+
+  // Level flash callback
+  onLevelFlash?: () => void;
+  // Camera shake callback
+  onCameraShake?: (intensity: number) => void;
+
   // Callbacks
   onScoreChange?: (score: number, highScore: number) => void;
   onLivesChange?: (lives: number) => void;
@@ -194,6 +213,14 @@ export class GameManager {
       if (saved) this.highScore = parseInt(saved, 10);
       const savedSkin = localStorage.getItem('neon-pac-skin') as PacSkin | null;
       if (savedSkin && PAC_SKIN_COLORS[savedSkin]) this.pacSkin = savedSkin;
+      const savedDaily = localStorage.getItem('neon-pac-daily-count');
+      if (savedDaily) this.dailyChallengesCompleted = parseInt(savedDaily, 10);
+      const savedSkins = localStorage.getItem('neon-pac-skins-used');
+      if (savedSkins) this.skinsUsed = new Set(JSON.parse(savedSkins));
+      const savedThemes = localStorage.getItem('neon-pac-themes-used');
+      if (savedThemes) this.themesUsed = new Set(JSON.parse(savedThemes));
+      const savedDiffs = localStorage.getItem('neon-pac-diffs-used');
+      if (savedDiffs) this.difficultiesUsed = new Set(JSON.parse(savedDiffs));
     } catch { /* ignore */ }
 
     // Init ghosts
@@ -233,7 +260,28 @@ export class GameManager {
     const mat = this.pacMesh.material as MeshStandardMaterial;
     mat.color.setHex(colors.main);
     mat.emissive.setHex(colors.emissive);
-    try { localStorage.setItem('neon-pac-skin', skin); } catch { /* ignore */ }
+    this.skinsUsed.add(skin);
+    try {
+      localStorage.setItem('neon-pac-skin', skin);
+      localStorage.setItem('neon-pac-skins-used', JSON.stringify(Array.from(this.skinsUsed)));
+    } catch { /* ignore */ }
+    if (this.skinsUsed.size >= 5) this.achievements.unlock('all_skins_used');
+  }
+
+  trackThemeUsed(theme: string): void {
+    this.themesUsed.add(theme);
+    try { localStorage.setItem('neon-pac-themes-used', JSON.stringify(Array.from(this.themesUsed))); } catch { /* ignore */ }
+    if (this.themesUsed.size >= 5) this.achievements.unlock('all_themes_used');
+  }
+
+  private getDailySeed(): number {
+    const d = new Date();
+    const dateStr = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    let hash = 0;
+    for (let i = 0; i < dateStr.length; i++) {
+      hash = ((hash << 5) - hash + dateStr.charCodeAt(i)) | 0;
+    }
+    return Math.abs(hash);
   }
 
   startGame(mode?: GameMode): void {
@@ -241,16 +289,32 @@ export class GameManager {
     const diffMod = DIFFICULTY_MODS[this.difficulty];
     const modeCfg = MODE_CONFIGS[this.gameMode];
 
+    // Track difficulty used
+    this.difficultiesUsed.add(this.difficulty);
+    try { localStorage.setItem('neon-pac-diffs-used', JSON.stringify(Array.from(this.difficultiesUsed))); } catch { /* ignore */ }
+    if (this.difficultiesUsed.size >= 3) this.achievements.unlock('all_difficulties');
+
     this.score = 0;
     this.gameStartScore = 0;
     this.lives = modeCfg.survivalMode ? 1 : diffMod.lives;
     this.level = 1;
     this.nextExtraLifeScore = EXTRA_LIFE_SCORE;
+    this.extraLivesThisGame = 0;
 
-    // Set maze layout for level 1
-    const maze = getMazeForLevel(this.level);
-    setMazeLayout(maze);
-    this.currentMazeName = MAZE_NAMES[(this.level - 1) % MAZE_NAMES.length];
+    // Daily Challenge: use seeded maze selection
+    if (this.gameMode === GameMode.DAILY) {
+      const seed = this.getDailySeed();
+      const mazeIdx = seed % ALL_MAZES.length;
+      setMazeLayout(ALL_MAZES[mazeIdx]);
+      this.currentMazeName = MAZE_NAMES[mazeIdx];
+      // Daily has 2 lives and faster ghosts
+      this.lives = 2;
+    } else {
+      // Set maze layout for level 1
+      const maze = getMazeForLevel(this.level);
+      setMazeLayout(maze);
+      this.currentMazeName = MAZE_NAMES[(this.level - 1) % MAZE_NAMES.length];
+    }
 
     this.dotGrid.reset();
     this.resetPositions();
@@ -415,10 +479,14 @@ export class GameManager {
 
           this.level++;
 
-          // Change maze layout for new level
-          const newMaze = getMazeForLevel(this.level);
-          setMazeLayout(newMaze);
-          this.currentMazeName = MAZE_NAMES[(this.level - 1) % MAZE_NAMES.length];
+          // Daily Challenge keeps same maze
+          if (this.gameMode !== GameMode.DAILY) {
+            const newMaze = getMazeForLevel(this.level);
+            setMazeLayout(newMaze);
+            this.currentMazeName = MAZE_NAMES[(this.level - 1) % MAZE_NAMES.length];
+          }
+          this.mazesVisited.add(this.currentMazeName);
+          if (this.mazesVisited.size >= 4) this.achievements.unlock('all_mazes');
 
           this.dotGrid.reset();
           this.resetPositions();
@@ -430,8 +498,9 @@ export class GameManager {
           this.state = GameState.READY;
           this.stateTimer = READY_DURATION;
 
-          // Signal maze rebuild needed
+          // Signal maze rebuild needed and flash
           this.onRebuildMaze?.();
+          this.onLevelFlash?.();
           this.onMazeChange?.(this.currentMazeName);
           this.onLevelChange?.(this.level);
           this.onStateChange?.(this.state);
@@ -547,14 +616,16 @@ export class GameManager {
   private checkExtraLife(): void {
     if (this.score >= this.nextExtraLifeScore) {
       this.lives++;
+      this.extraLivesThisGame++;
       this.nextExtraLifeScore += EXTRA_LIFE_SCORE;
       this.audio.playExtraLife();
       this.onExtraLife?.();
       this.onLivesChange?.(this.lives);
       this.onComboDisplay?.('EXTRA LIFE!');
 
-      // Achievement
+      // Achievements
       this.achievements.unlock('extra_life');
+      if (this.extraLivesThisGame >= 3) this.achievements.unlock('extra_life_3');
     }
   }
 
@@ -583,10 +654,24 @@ export class GameManager {
   private updatePacMan(delta: number): void {
     const speed = PACMAN_SPEED + (this.level - 1) * 0.15;
 
-    if (this.pacNextDir !== Direction.NONE && this.pacMoveProgress <= 0.1) {
-      if (canMove(this.pacCol, this.pacRow, this.pacNextDir)) {
-        this.pacDir = this.pacNextDir;
-        this.pacNextDir = Direction.NONE;
+    // Corner pre-turning: try queued direction at wider threshold
+    if (this.pacNextDir !== Direction.NONE) {
+      if (this.pacMoveProgress <= 0.3 || this.pacMoveProgress >= 0.8) {
+        if (canMove(this.pacCol, this.pacRow, this.pacNextDir)) {
+          this.pacDir = this.pacNextDir;
+          this.pacNextDir = Direction.NONE;
+        }
+      }
+      // Also try at destination cell for pre-turn around corners
+      if (this.pacDir !== Direction.NONE && this.pacMoveProgress >= 0.7) {
+        const dv = DIR_VECTORS[this.pacDir];
+        let nextCol = this.pacCol + dv.col;
+        const nextRow = this.pacRow + dv.row;
+        if (nextCol < 0) nextCol = MAZE_COLS - 1;
+        if (nextCol >= MAZE_COLS) nextCol = 0;
+        if (canMove(nextCol, nextRow, this.pacNextDir)) {
+          // Will apply the turn when we arrive at next cell
+        }
       }
     }
 
@@ -618,7 +703,11 @@ export class GameManager {
         this.statsManager.recordTunnelUse();
       }
 
-      if (!canMove(this.pacCol, this.pacRow, this.pacDir)) {
+      // Apply buffered pre-turn on arrival at new cell
+      if (this.pacNextDir !== Direction.NONE && canMove(this.pacCol, this.pacRow, this.pacNextDir)) {
+        this.pacDir = this.pacNextDir;
+        this.pacNextDir = Direction.NONE;
+      } else if (!canMove(this.pacCol, this.pacRow, this.pacDir)) {
         this.pacDir = Direction.NONE;
       }
     }
@@ -903,6 +992,7 @@ export class GameManager {
           this.stateTimer = DYING_DURATION;
           this.audio.playDeath();
           this.onStateChange?.(this.state);
+          this.onCameraShake?.(0.8);
           return;
         }
       }
@@ -989,6 +1079,8 @@ export class GameManager {
     if (this.score >= 25000) this.achievements.unlock('score_25k');
     if (this.score >= 50000) this.achievements.unlock('score_50k');
     if (this.score >= 100000) this.achievements.unlock('score_100k');
+    if (this.score >= 200000) this.achievements.unlock('score_200k');
+    if (this.score >= 500000) this.achievements.unlock('score_500k');
 
     if (this.score - this.gameStartScore >= 10000 && this.statsManager.currentLevelDeaths === 0 && this.levelsWithoutDeath >= 0) {
       this.achievements.unlock('ten_k_no_death');
@@ -997,23 +1089,34 @@ export class GameManager {
     if (this.statsManager.currentLevelTime >= 30) this.achievements.unlock('survive_30s');
     if (this.statsManager.currentLevelTime >= 60) this.achievements.unlock('survive_60s');
     if (this.statsManager.currentLevelTime >= 120) this.achievements.unlock('survive_120s');
+    if (this.statsManager.currentLevelTime >= 180) this.achievements.unlock('survive_180s');
+    if (this.statsManager.currentLevelTime >= 300) this.achievements.unlock('survive_300s');
 
     const gp = this.statsManager.stats.totalGamesPlayed;
     if (gp >= 5) this.achievements.unlock('games_5');
     if (gp >= 10) this.achievements.unlock('games_10');
     if (gp >= 25) this.achievements.unlock('games_25');
     if (gp >= 50) this.achievements.unlock('games_50');
+    if (gp >= 100) this.achievements.unlock('games_100');
 
     const td = this.statsManager.stats.totalDotsEaten;
     if (td >= 1000) this.achievements.unlock('dots_1000');
     if (td >= 5000) this.achievements.unlock('dots_5000');
     if (td >= 10000) this.achievements.unlock('dots_10000');
+    if (td >= 25000) this.achievements.unlock('dots_25000');
 
     const tp = this.statsManager.stats.totalPowerPelletsUsed;
     if (tp >= 10) this.achievements.unlock('power_10');
     if (tp >= 50) this.achievements.unlock('power_50');
+    if (tp >= 100) this.achievements.unlock('power_100');
 
     if (this.tunnelUsesThisGame >= 10) this.achievements.unlock('tunnel_master');
+    if (this.tunnelUsesThisGame >= 25) this.achievements.unlock('tunnel_25');
+
+    // Time achievements
+    const totalTime = this.statsManager.stats.totalTimePlayed + this.statsManager.currentGameTime;
+    if (totalTime >= 3600) this.achievements.unlock('total_time_1h');
+    if (totalTime >= 18000) this.achievements.unlock('total_time_5h');
   }
 
   private checkGhostAchievements(ghostName: string): void {
@@ -1025,6 +1128,7 @@ export class GameManager {
       this.achievements.unlock('ghost_4chain');
       this.quadKillsThisGame++;
       if (this.quadKillsThisGame >= 2) this.achievements.unlock('quad_kill_twice');
+      if (this.quadKillsThisGame >= 3) this.achievements.unlock('triple_quad');
     }
 
     const tg = this.statsManager.stats.totalGhostsEaten;
@@ -1032,6 +1136,8 @@ export class GameManager {
     if (tg >= 25) this.achievements.unlock('ghost_25total');
     if (tg >= 50) this.achievements.unlock('ghost_50total');
     if (tg >= 100) this.achievements.unlock('ghost_100total');
+    if (tg >= 200) this.achievements.unlock('ghost_200total');
+    if (tg >= 500) this.achievements.unlock('ghost_500total');
 
     if (ghostName === GhostName.BLINKY) this.achievements.unlock('ghost_blinky');
     if (ghostName === GhostName.PINKY) this.achievements.unlock('ghost_pinky');
@@ -1048,6 +1154,7 @@ export class GameManager {
     const tf = this.statsManager.stats.totalFruitsEaten;
     if (tf >= 5) this.achievements.unlock('fruit_5');
     if (tf >= 15) this.achievements.unlock('fruit_15');
+    if (tf >= 30) this.achievements.unlock('fruit_30');
 
     if (fruitType === FruitType.CHERRY) this.achievements.unlock('fruit_cherry');
     if (fruitType === FruitType.STRAWBERRY) this.achievements.unlock('fruit_strawberry');
@@ -1055,6 +1162,8 @@ export class GameManager {
     if (fruitType === FruitType.APPLE) this.achievements.unlock('fruit_apple');
     if (fruitType === FruitType.MELON) this.achievements.unlock('fruit_melon');
     if (fruitType === FruitType.KEY) this.achievements.unlock('fruit_key');
+    if (fruitType === FruitType.GALAXIAN) this.achievements.unlock('fruit_galaxian');
+    if (fruitType === FruitType.BELL) this.achievements.unlock('fruit_bell');
 
     const allTypes = [FruitType.CHERRY, FruitType.STRAWBERRY, FruitType.ORANGE, FruitType.APPLE, FruitType.MELON, FruitType.KEY];
     if (allTypes.every((t) => (this.statsManager.stats.fruitsEatenByType[t] ?? 0) > 0)) {
@@ -1069,10 +1178,20 @@ export class GameManager {
     if (this.level >= 15) this.achievements.unlock('level_15');
     if (this.level >= 20) this.achievements.unlock('level_20');
     if (this.level >= 25) this.achievements.unlock('level_25');
+    if (this.level >= 30) this.achievements.unlock('level_30');
+    if (this.level >= 50) this.achievements.unlock('level_50');
 
     if (this.gameMode === GameMode.SPEED) this.achievements.unlock('mode_speed');
     if (this.gameMode === GameMode.DARK) this.achievements.unlock('mode_dark');
     if (this.gameMode === GameMode.SURVIVAL && this.level >= 5) this.achievements.unlock('mode_survival');
+    if (this.gameMode === GameMode.MARATHON && this.level >= 10) this.achievements.unlock('marathon_l10');
+    if (this.gameMode === GameMode.DAILY) {
+      this.dailyChallengesCompleted++;
+      try { localStorage.setItem('neon-pac-daily-count', String(this.dailyChallengesCompleted)); } catch { /* ignore */ }
+      this.achievements.unlock('daily_complete');
+      if (this.dailyChallengesCompleted >= 3) this.achievements.unlock('daily_3');
+      if (this.dailyChallengesCompleted >= 7) this.achievements.unlock('daily_7');
+    }
     if (this.statsManager.stats.modesPlayed.size >= 4) this.achievements.unlock('mode_all');
 
     // Maze-specific achievements
@@ -1091,6 +1210,8 @@ export class GameManager {
         this.achievements.unlock('survivor_no_death');
         this.achievements.unlock('flawless_3');
       }
+      if (this.levelsWithoutDeath >= 5) this.achievements.unlock('flawless_5');
+      if (this.levelsWithoutDeath >= 10) this.achievements.unlock('flawless_10');
     } else {
       this.levelsWithoutDeath = 0;
     }
@@ -1104,12 +1225,17 @@ export class GameManager {
     }
 
     if (lt < 60) this.achievements.unlock('speed_clear');
+    if (lt < 30) this.achievements.unlock('speed_clear_30');
     if (this.level === 1 && lt < 90) this.achievements.unlock('speed_l1_90');
     if (this.level === 1 && lt < 60) this.achievements.unlock('speed_l1_60');
     if (this.level === 1 && lt < 45) this.achievements.unlock('speed_l1_45');
+    if (this.level === 2 && lt < 90) this.achievements.unlock('speed_l2_90');
 
     if (this.level >= 3 && this.statsManager.currentGameTime < 300) {
       this.achievements.unlock('speed_3levels_5min');
+    }
+    if (this.level >= 5 && this.statsManager.currentGameTime < 600) {
+      this.achievements.unlock('speed_5levels_10min');
     }
 
     if (this.lives === 1) this.achievements.unlock('comeback');

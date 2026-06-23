@@ -9,7 +9,7 @@ import {
   eq,
 } from '@iwsdk/core';
 import { GameManager } from './game';
-import { GameState, GameMode, Difficulty, MazeTheme } from './types';
+import { GameState, GameMode, Difficulty, MazeTheme, DIFFICULTY_MODS } from './types';
 import { PacSkin, PAC_SKIN_NAMES } from './maze';
 import type { Achievement } from './achievements';
 
@@ -242,6 +242,7 @@ export class UISystem extends createSystem({
         { btn: 'btn-survival', mode: GameMode.SURVIVAL },
         { btn: 'btn-marathon', mode: GameMode.MARATHON },
         { btn: 'btn-zen', mode: GameMode.ZEN },
+        { btn: 'btn-daily', mode: GameMode.DAILY },
       ];
 
       for (const { btn, mode } of modes) {
@@ -480,6 +481,7 @@ export class UISystem extends createSystem({
         const modeNames: Record<string, string> = {
           classic: 'Classic', speed: 'Speed', dark: 'Dark',
           survival: 'Survival', marathon: 'Marathon', zen: 'Zen',
+          daily: 'Daily',
         };
         modeEl?.setProperties({ text: modeNames[entry.mode] ?? entry.mode });
         const d = new Date(entry.date);
@@ -612,6 +614,7 @@ export class UISystem extends createSystem({
       [GameMode.SURVIVAL]: 'Survival',
       [GameMode.MARATHON]: 'Marathon',
       [GameMode.ZEN]: 'Zen',
+      [GameMode.DAILY]: 'Daily',
     };
     const modeEl = this.hudDoc.getElementById('mode-indicator') as UIKit.Text | undefined;
     modeEl?.setProperties({ text: modeLabels[this.game.gameMode] ?? 'Classic' });
@@ -627,6 +630,7 @@ export class UISystem extends createSystem({
       [GameMode.SURVIVAL]: 'Survival',
       [GameMode.MARATHON]: 'Marathon',
       [GameMode.ZEN]: 'Zen',
+      [GameMode.DAILY]: 'Daily Challenge',
     };
     modeEl?.setProperties({ text: `Mode: ${modeLabels[this.game.gameMode]}` });
 
@@ -701,6 +705,33 @@ export class UISystem extends createSystem({
       if (this.comboTimer <= 0 && this.hudDoc) {
         const comboEl = this.hudDoc.getElementById('combo-text') as UIKit.Text | undefined;
         comboEl?.setProperties({ text: ' ' });
+      }
+    }
+
+    // Fright timer display
+    if (this.hudDoc && this.game) {
+      const frightRemaining = this.game.frightTimerRemaining;
+      const frightMax = this.game.frightTimerMax;
+      const frightTimerEl = this.hudDoc.getElementById('fright-timer') as UIKit.Text | undefined;
+      const frightBarEl = this.hudDoc.getElementById('fright-bar') as UIKit.Container | undefined;
+
+      if (frightRemaining > 0) {
+        const secs = Math.ceil(frightRemaining);
+        frightTimerEl?.setProperties({ text: `${secs}s` });
+
+        // Color: blue normally, red when < 2s
+        if (frightRemaining < 2) {
+          frightTimerEl?.setProperties({ text: `${secs}s`, color: '#ff4444' });
+        } else {
+          frightTimerEl?.setProperties({ text: `${secs}s`, color: '#4466ff' });
+        }
+
+        // Update bar width (max 50)
+        const barWidth = Math.max(2, Math.floor((frightRemaining / frightMax) * 50));
+        frightBarEl?.setProperties({ width: barWidth });
+      } else {
+        frightTimerEl?.setProperties({ text: ' ' });
+        frightBarEl?.setProperties({ width: 0 });
       }
     }
   }

@@ -11,6 +11,7 @@ import {
   LineBasicMaterial,
   PointLight,
   Group,
+  Vector3,
 } from '@iwsdk/core';
 import { buildMazeGroup, DotGrid, setMazeLayout, PacSkin } from './maze';
 import { getMazeForLevel } from './maze-layouts';
@@ -154,6 +155,9 @@ async function main(): Promise<void> {
   uiSystem.onThemeChange = (theme: MazeTheme) => {
     const colors = THEME_COLORS[theme];
 
+    // Track theme for achievements
+    game.trackThemeUsed(theme);
+
     // Update fog and background
     (world.scene.fog as FogExp2).color.setHex(colors.fog);
     (world.scene.background as Color).setHex(colors.fog);
@@ -178,6 +182,85 @@ async function main(): Promise<void> {
       mat.emissive.setHex(colors.dot);
     }
   };
+
+  // ---- Level flash effect ----
+  let levelFlashTimer = 0;
+  const savedWallEmissive = new Color(0x0044cc);
+
+  game.onLevelFlash = () => {
+    levelFlashTimer = 0.6;
+    game.audio.playLevelFlash();
+    // Bright flash on walls
+    mazeGroup.traverse((obj) => {
+      if (obj instanceof InstancedMesh) {
+        const mat = obj.material as MeshStandardMaterial;
+        savedWallEmissive.copy(mat.emissive);
+        mat.emissiveIntensity = 2.0;
+      }
+    });
+  };
+
+  // ---- Camera shake effect ----
+  const baseCamPos = world.camera.position.clone();
+  let shakeTimer = 0;
+  let shakeIntensity = 0;
+
+  game.onCameraShake = (intensity: number) => {
+    shakeTimer = 0.4;
+    shakeIntensity = intensity;
+    baseCamPos.copy(world.camera.position);
+  };
+
+  // ---- Ambient music on state change ----
+  const origOnStateChange = game.onStateChange;
+  game.onStateChange = (state) => {
+    origOnStateChange?.(state);
+    if (state === 'playing' || state === 'ready') {
+      game.audio.startAmbient();
+    } else if (state === 'menu' || state === 'gameover') {
+      game.audio.stopAmbient();
+    }
+  };
+
+  // Per-frame effects hook via a simple rAF-backed ticker
+  // (IWSDK systems handle the main game loop; this is for camera/visual FX only)
+  let lastFxTime = performance.now();
+  function fxTick(): void {
+    const now = performance.now();
+    const dt = Math.min((now - lastFxTime) / 1000, 0.1);
+    lastFxTime = now;
+
+    // Level flash fade
+    if (levelFlashTimer > 0) {
+      levelFlashTimer -= dt;
+      if (levelFlashTimer <= 0) {
+        mazeGroup.traverse((obj) => {
+          if (obj instanceof InstancedMesh) {
+            const mat = obj.material as MeshStandardMaterial;
+            mat.emissiveIntensity = 0.4;
+          }
+        });
+      }
+    }
+
+    // Camera shake
+    if (shakeTimer > 0) {
+      shakeTimer -= dt;
+      const t = shakeTimer / 0.4;
+      const amp = shakeIntensity * t * 0.02;
+      world.camera.position.set(
+        baseCamPos.x + (Math.random() - 0.5) * amp,
+        baseCamPos.y + (Math.random() - 0.5) * amp * 0.5,
+        baseCamPos.z + (Math.random() - 0.5) * amp,
+      );
+      if (shakeTimer <= 0) {
+        world.camera.position.copy(baseCamPos);
+      }
+    }
+
+    requestAnimationFrame(fxTick);
+  }
+  requestAnimationFrame(fxTick);
 }
 
 main().catch(console.error);

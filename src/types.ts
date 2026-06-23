@@ -70,6 +70,7 @@ export enum GameMode {
   SURVIVAL = 'survival',
   MARATHON = 'marathon',
   ZEN = 'zen',
+  DAILY = 'daily',
 }
 
 export enum Difficulty {
@@ -244,6 +245,14 @@ export const MODE_CONFIGS: Record<GameMode, {
     darkMode: false,
     survivalMode: false,
     infiniteLives: true,
+  },
+  [GameMode.DAILY]: {
+    label: 'Daily Challenge',
+    description: 'Unique challenge every day',
+    speedMult: 1.2,
+    darkMode: false,
+    survivalMode: false,
+    infiniteLives: false,
   },
 };
 

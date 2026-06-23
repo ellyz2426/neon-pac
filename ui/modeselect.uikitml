@@ -87,6 +87,10 @@
       <text class="mode-label">Zen</text>
       <text class="mode-desc">No ghosts. Just dots.</text>
     </container>
+    <container class="mode-btn" name="btn-daily" style="border-color: #ffaa00;">
+      <text class="mode-label" style="color: #ffaa00;">Daily</text>
+      <text class="mode-desc">Unique challenge every day</text>
+    </container>
     <container class="back-btn" name="btn-back-mode">
       <text class="back-text">BACK</text>
     </container>

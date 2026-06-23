@@ -116,6 +116,56 @@ const ACHIEVEMENT_DEFS: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = [
 
   // Skin achievements
   { id: 'skin_change', title: 'Fashion Forward', description: 'Change your Pac-Man skin', icon: '[SK]', category: AchievementCategory.MASTERY },
+
+  // ---- Round 4 additions ----
+
+  // Score milestones
+  { id: 'score_200k', title: 'Score Titan', description: 'Score 200,000 points', icon: '[200K]', category: AchievementCategory.SCORE },
+  { id: 'score_500k', title: 'Score Demigod', description: 'Score 500,000 points', icon: '[500K]', category: AchievementCategory.SCORE },
+
+  // Ghost milestones
+  { id: 'ghost_200total', title: 'Ghost Annihilator', description: 'Eat 200 ghosts total', icon: '[200]', category: AchievementCategory.GHOST },
+  { id: 'ghost_500total', title: 'Ghost Apocalypse', description: 'Eat 500 ghosts total', icon: '[500]', category: AchievementCategory.GHOST },
+  { id: 'triple_quad', title: 'Triple Quad', description: 'Get 3 quad kills in one game', icon: '[TQ]', category: AchievementCategory.GHOST },
+
+  // Level milestones
+  { id: 'level_30', title: 'Endless Runner', description: 'Reach level 30', icon: '[L30]', category: AchievementCategory.LEVEL },
+  { id: 'level_50', title: 'Neon God', description: 'Reach level 50', icon: '[L50]', category: AchievementCategory.LEVEL },
+
+  // Skill achievements
+  { id: 'flawless_5', title: 'Flawless Five', description: 'Clear 5 levels without dying', icon: '[F5]', category: AchievementCategory.SKILL },
+  { id: 'flawless_10', title: 'Flawless Ten', description: 'Clear 10 levels without dying', icon: '[FA]', category: AchievementCategory.SKILL },
+  { id: 'speed_clear_30', title: 'Turbo Clear', description: 'Clear a level in under 30 seconds', icon: '[TC]', category: AchievementCategory.SPEED },
+  { id: 'tunnel_25', title: 'Tunnel Rat', description: 'Use tunnels 25 times in one game', icon: '[T25]', category: AchievementCategory.SKILL },
+
+  // Fruit achievements
+  { id: 'fruit_30', title: 'Fruit Baron', description: 'Eat 30 fruits total', icon: '[F30]', category: AchievementCategory.FRUIT },
+  { id: 'fruit_galaxian', title: 'Galactic', description: 'Eat a Galaxian', icon: '[GX]', category: AchievementCategory.FRUIT },
+  { id: 'fruit_bell', title: 'Bell Ringer', description: 'Eat a bell', icon: '[BL]', category: AchievementCategory.FRUIT },
+
+  // Survival achievements
+  { id: 'survive_180s', title: 'Eternal Pac', description: 'Survive 180 seconds on a level', icon: '[3M]', category: AchievementCategory.SURVIVAL },
+  { id: 'survive_300s', title: 'Iron Will', description: 'Survive 5 minutes on a level', icon: '[5M]', category: AchievementCategory.SURVIVAL },
+  { id: 'games_100', title: 'Century', description: 'Play 100 games', icon: '[100]', category: AchievementCategory.SURVIVAL },
+
+  // Speed achievements
+  { id: 'speed_l2_90', title: 'Quick Level 2', description: 'Clear level 2 in under 90 seconds', icon: '[Q2]', category: AchievementCategory.SPEED },
+  { id: 'speed_5levels_10min', title: 'Speed Demon 5', description: 'Clear 5 levels in under 10 min', icon: '[S5]', category: AchievementCategory.SPEED },
+
+  // Mastery achievements
+  { id: 'dots_25000', title: 'Dot Emperor', description: 'Eat 25,000 dots total', icon: '[25K]', category: AchievementCategory.MASTERY },
+  { id: 'power_100', title: 'Power Overload', description: 'Use 100 power pellets total', icon: '[P10]', category: AchievementCategory.MASTERY },
+  { id: 'all_mazes', title: 'Maze Explorer', description: 'Play all 4 maze layouts', icon: '[ME]', category: AchievementCategory.MASTERY },
+  { id: 'all_skins_used', title: 'Fashionista', description: 'Try all 5 Pac-Man skins', icon: '[FS]', category: AchievementCategory.MASTERY },
+  { id: 'all_themes_used', title: 'Color Master', description: 'Try all 5 maze themes', icon: '[CM]', category: AchievementCategory.MASTERY },
+  { id: 'all_difficulties', title: 'All Difficulties', description: 'Play on all 3 difficulties', icon: '[AD]', category: AchievementCategory.MASTERY },
+  { id: 'daily_complete', title: 'Daily Hero', description: 'Complete a Daily Challenge level', icon: '[DC]', category: AchievementCategory.MASTERY },
+  { id: 'daily_3', title: 'Consistent', description: 'Complete 3 Daily Challenges', icon: '[D3]', category: AchievementCategory.MASTERY },
+  { id: 'daily_7', title: 'Dedicated Daily', description: 'Complete 7 Daily Challenges', icon: '[D7]', category: AchievementCategory.MASTERY },
+  { id: 'marathon_l10', title: 'Marathon Master', description: 'Reach level 10 in Marathon', icon: '[MM]', category: AchievementCategory.MASTERY },
+  { id: 'total_time_1h', title: 'Time Investor', description: 'Play for 1 hour total', icon: '[1H]', category: AchievementCategory.MASTERY },
+  { id: 'total_time_5h', title: 'Time Lord', description: 'Play for 5 hours total', icon: '[5H]', category: AchievementCategory.MASTERY },
+  { id: 'extra_life_3', title: 'Life Collector', description: 'Earn 3 extra lives in one game', icon: '[3U]', category: AchievementCategory.SCORE },
 ];
 
 const STORAGE_KEY = 'neon-pac-achievements';
