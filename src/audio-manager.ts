@@ -8,6 +8,13 @@ export class AudioManager {
   private ambientGain: GainNode | null = null;
   private ambientRunning = false;
 
+  // Siren state
+  private sirenOsc: OscillatorNode | null = null;
+  private sirenGain: GainNode | null = null;
+  private sirenRunning = false;
+  private sirenLevel = 0;
+  private static readonly SIREN_FREQS = [180, 240, 320, 420]; // escalating urgency
+
   private getCtx(): AudioContext {
     if (!this.ctx) {
       this.ctx = new AudioContext();
@@ -285,5 +292,92 @@ export class AudioManager {
     gain.connect(this.getMaster());
     osc.start(t);
     osc.stop(t + 0.45);
+  }
+
+  // ---- Siren (escalating urgency as dots decrease) ----
+  startSiren(level = 0): void {
+    this.sirenLevel = level;
+    if (this.sirenRunning) {
+      this.updateSirenFreq();
+      return;
+    }
+    const ctx = this.getCtx();
+    this.sirenGain = ctx.createGain();
+    this.sirenGain.gain.value = 0;
+    this.sirenGain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 0.5);
+    this.sirenGain.connect(this.getMaster());
+
+    this.sirenOsc = ctx.createOscillator();
+    this.sirenOsc.type = 'sawtooth';
+    this.sirenOsc.frequency.value = AudioManager.SIREN_FREQS[level] ?? 180;
+    this.sirenOsc.connect(this.sirenGain);
+    this.sirenOsc.start();
+    this.sirenRunning = true;
+  }
+
+  updateSirenLevel(level: number): void {
+    this.sirenLevel = level;
+    this.updateSirenFreq();
+  }
+
+  private updateSirenFreq(): void {
+    if (!this.sirenOsc || !this.sirenRunning) return;
+    const ctx = this.getCtx();
+    const freq = AudioManager.SIREN_FREQS[this.sirenLevel] ?? 180;
+    this.sirenOsc.frequency.linearRampToValueAtTime(freq, ctx.currentTime + 0.3);
+  }
+
+  stopSiren(): void {
+    if (!this.sirenRunning) return;
+    if (this.sirenGain) {
+      const ctx = this.getCtx();
+      this.sirenGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
+    }
+    setTimeout(() => {
+      if (this.sirenOsc) {
+        try { this.sirenOsc.stop(); } catch { /* ignore */ }
+        this.sirenOsc = null;
+      }
+      this.sirenGain = null;
+      this.sirenRunning = false;
+    }, 400);
+  }
+
+  // ---- Tunnel warp sound ----
+  playTunnelWarp(): void {
+    const ctx = this.getCtx();
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, t);
+    osc.frequency.exponentialRampToValueAtTime(200, t + 0.15);
+    osc.frequency.exponentialRampToValueAtTime(800, t + 0.3);
+    gain.gain.setValueAtTime(0.08, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+    osc.connect(gain);
+    gain.connect(this.getMaster());
+    osc.start(t);
+    osc.stop(t + 0.4);
+  }
+
+  // ---- Streak combo sound ----
+  playStreakUp(multiplier: number): void {
+    const ctx = this.getCtx();
+    const t = ctx.currentTime;
+    const baseFreq = 400 + multiplier * 200;
+    for (let i = 0; i < 3; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      const st = t + i * 0.06;
+      osc.frequency.setValueAtTime(baseFreq + i * 100, st);
+      gain.gain.setValueAtTime(0.12, st);
+      gain.gain.exponentialRampToValueAtTime(0.001, st + 0.1);
+      osc.connect(gain);
+      gain.connect(this.getMaster());
+      osc.start(st);
+      osc.stop(st + 0.12);
+    }
   }
 }

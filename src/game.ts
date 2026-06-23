@@ -163,6 +163,25 @@ export class GameManager {
     return DIFFICULTY_MODS[this.difficulty].frightDuration;
   }
 
+  // Frightened flash state (ghosts flash blue/white when fright nearly over)
+  private frightFlashTimer = 0;
+  frightFlashWhite = false; // exposed for mesh color toggling
+
+  // Dot streak combo system
+  private dotStreakTimer = 0;
+  private dotStreakCount = 0;
+  private dotStreakMultiplier = 1;
+  private readonly DOT_STREAK_WINDOW = 0.8; // seconds between dots to maintain streak
+  private readonly DOT_STREAK_THRESHOLDS = [5, 15, 30, 50]; // dots for 2x, 3x, 4x, 5x
+  onStreakChange?: (multiplier: number, count: number) => void;
+
+  // Ghost house bobbing
+  private ghostHouseBobTimer = 0;
+
+  // Siren state
+  private sirenLevel = 0; // 0-3, increases as dots decrease
+  onSirenChange?: (level: number) => void;
+
   // Daily Challenge tracking
   private dailyChallengesCompleted = 0;
   private extraLivesThisGame = 0;
@@ -332,6 +351,12 @@ export class GameManager {
     this.tunnelUsesThisGame = 0;
     this.usedTunnelThisLevel = false;
     this.levelStartLives = this.lives;
+    this.dotStreakCount = 0;
+    this.dotStreakMultiplier = 1;
+    this.dotStreakTimer = 0;
+    this.sirenLevel = 0;
+    this.frightFlashTimer = 0;
+    this.frightFlashWhite = false;
 
     // Zen mode: hide ghosts
     if (this.gameMode === GameMode.ZEN) {
@@ -487,6 +512,7 @@ export class GameManager {
           }
           this.mazesVisited.add(this.currentMazeName);
           if (this.mazesVisited.size >= 4) this.achievements.unlock('all_mazes');
+          if (this.mazesVisited.size >= 6) this.achievements.unlock('all_6_mazes');
 
           this.dotGrid.reset();
           this.resetPositions();
@@ -518,8 +544,22 @@ export class GameManager {
       this.darkLight.position.set(pacWorld.x, pacWorld.y + 0.3, pacWorld.z);
     }
 
+    // Ghost house bobbing animation
+    this.updateGhostHouseBob(delta);
+
     // Update ghost eyes direction
     this.updateGhostEyes();
+
+    // Dot streak timer decay
+    if (this.dotStreakTimer > 0) {
+      this.dotStreakTimer -= delta;
+      if (this.dotStreakTimer <= 0) {
+        this.resetDotStreak();
+      }
+    }
+
+    // Siren level based on remaining dots
+    this.updateSirenLevel();
   }
 
   private updateGhostEyes(): void {
@@ -587,6 +627,21 @@ export class GameManager {
         this.audio.playFrightenedLoop(true);
         this.frightenedSoundTimer = 0.5;
       }
+
+      // Frightened flash warning: ghosts alternate blue/white when <2s left
+      if (this.frightTimer < 2 && this.frightTimer > 0) {
+        this.frightFlashTimer += delta;
+        if (this.frightFlashTimer >= 0.15) {
+          this.frightFlashTimer = 0;
+          this.frightFlashWhite = !this.frightFlashWhite;
+          for (const g of this.ghosts) {
+            if (g.mode === GhostMode.FRIGHTENED) {
+              this.setGhostColor(g, this.frightFlashWhite ? 0xffffff : FRIGHTENED_COLOR);
+            }
+          }
+        }
+      }
+
       if (this.frightTimer <= 0) {
         this.endFrightened();
       }
@@ -695,12 +750,14 @@ export class GameManager {
         this.tunnelUsesThisGame++;
         this.usedTunnelThisLevel = true;
         this.statsManager.recordTunnelUse();
+        this.audio.playTunnelWarp();
       }
       if (this.pacCol >= MAZE_COLS) {
         this.pacCol = 0;
         this.tunnelUsesThisGame++;
         this.usedTunnelThisLevel = true;
         this.statsManager.recordTunnelUse();
+        this.audio.playTunnelWarp();
       }
 
       // Apply buffered pre-turn on arrival at new cell
@@ -934,7 +991,9 @@ export class GameManager {
         this.audio.playPowerPellet();
         this.statsManager.recordPowerPellet();
       } else {
-        this.score += DOT_SCORE;
+        const streakBonus = DOT_SCORE * this.dotStreakMultiplier;
+        this.score += streakBonus;
+        this.advanceDotStreak();
         this.statsManager.recordDotEaten();
         this.wakaTimer += 0.15;
         if (this.wakaTimer >= 0.15) {
@@ -1004,6 +1063,8 @@ export class GameManager {
     this.frightTimer = diffMod.frightDuration;
     this.ghostsEatenThisPower = 0;
     this.frightenedSoundTimer = 0;
+    this.frightFlashTimer = 0;
+    this.frightFlashWhite = false;
     for (const g of this.ghosts) {
       if (g.mode === GhostMode.CHASE || g.mode === GhostMode.SCATTER) {
         g.mode = GhostMode.FRIGHTENED;
@@ -1015,6 +1076,8 @@ export class GameManager {
 
   private endFrightened(): void {
     this.frightTimer = 0;
+    this.frightFlashTimer = 0;
+    this.frightFlashWhite = false;
     for (const g of this.ghosts) {
       if (g.mode === GhostMode.FRIGHTENED) {
         g.mode = this.isScatterPhase ? GhostMode.SCATTER : GhostMode.CHASE;
@@ -1081,6 +1144,7 @@ export class GameManager {
     if (this.score >= 100000) this.achievements.unlock('score_100k');
     if (this.score >= 200000) this.achievements.unlock('score_200k');
     if (this.score >= 500000) this.achievements.unlock('score_500k');
+    if (this.score >= 1000000) this.achievements.unlock('score_1m');
 
     if (this.score - this.gameStartScore >= 10000 && this.statsManager.currentLevelDeaths === 0 && this.levelsWithoutDeath >= 0) {
       this.achievements.unlock('ten_k_no_death');
@@ -1117,6 +1181,13 @@ export class GameManager {
     const totalTime = this.statsManager.stats.totalTimePlayed + this.statsManager.currentGameTime;
     if (totalTime >= 3600) this.achievements.unlock('total_time_1h');
     if (totalTime >= 18000) this.achievements.unlock('total_time_5h');
+    if (totalTime >= 36000) this.achievements.unlock('total_time_10h');
+
+    const gp2 = this.statsManager.stats.totalGamesPlayed;
+    if (gp2 >= 250) this.achievements.unlock('games_250');
+
+    const td2 = this.statsManager.stats.totalDotsEaten;
+    if (td2 >= 50000) this.achievements.unlock('dots_50000');
   }
 
   private checkGhostAchievements(ghostName: string): void {
@@ -1138,6 +1209,12 @@ export class GameManager {
     if (tg >= 100) this.achievements.unlock('ghost_100total');
     if (tg >= 200) this.achievements.unlock('ghost_200total');
     if (tg >= 500) this.achievements.unlock('ghost_500total');
+    if (tg >= 1000) this.achievements.unlock('ghost_1000total');
+
+    // Fright flash eat (eating during flash warning)
+    if (this.frightFlashWhite || (this.frightTimer > 0 && this.frightTimer < 2)) {
+      this.achievements.unlock('fright_flash_eat');
+    }
 
     if (ghostName === GhostName.BLINKY) this.achievements.unlock('ghost_blinky');
     if (ghostName === GhostName.PINKY) this.achievements.unlock('ghost_pinky');
@@ -1180,11 +1257,16 @@ export class GameManager {
     if (this.level >= 25) this.achievements.unlock('level_25');
     if (this.level >= 30) this.achievements.unlock('level_30');
     if (this.level >= 50) this.achievements.unlock('level_50');
+    if (this.level >= 75) this.achievements.unlock('level_75');
+    if (this.level >= 100) this.achievements.unlock('level_100');
 
     if (this.gameMode === GameMode.SPEED) this.achievements.unlock('mode_speed');
     if (this.gameMode === GameMode.DARK) this.achievements.unlock('mode_dark');
     if (this.gameMode === GameMode.SURVIVAL && this.level >= 5) this.achievements.unlock('mode_survival');
+    if (this.gameMode === GameMode.SURVIVAL && this.level >= 10) this.achievements.unlock('survival_l10');
     if (this.gameMode === GameMode.MARATHON && this.level >= 10) this.achievements.unlock('marathon_l10');
+    if (this.gameMode === GameMode.ZEN && this.level >= 10) this.achievements.unlock('zen_l10');
+    if (this.gameMode === GameMode.DARK && this.level >= 10) this.achievements.unlock('dark_l10');
     if (this.gameMode === GameMode.DAILY) {
       this.dailyChallengesCompleted++;
       try { localStorage.setItem('neon-pac-daily-count', String(this.dailyChallengesCompleted)); } catch { /* ignore */ }
@@ -1198,6 +1280,8 @@ export class GameManager {
     if (this.currentMazeName === 'Corridors') this.achievements.unlock('maze_corridors');
     if (this.currentMazeName === 'Arena') this.achievements.unlock('maze_arena');
     if (this.currentMazeName === 'Spiral') this.achievements.unlock('maze_spiral');
+    if (this.currentMazeName === 'Labyrinth') this.achievements.unlock('maze_labyrinth');
+    if (this.currentMazeName === 'Fortress') this.achievements.unlock('maze_fortress');
   }
 
   private checkLevelClearAchievements(): void {
@@ -1226,6 +1310,7 @@ export class GameManager {
 
     if (lt < 60) this.achievements.unlock('speed_clear');
     if (lt < 30) this.achievements.unlock('speed_clear_30');
+    if (lt < 20) this.achievements.unlock('speed_clear_20');
     if (this.level === 1 && lt < 90) this.achievements.unlock('speed_l1_90');
     if (this.level === 1 && lt < 60) this.achievements.unlock('speed_l1_60');
     if (this.level === 1 && lt < 45) this.achievements.unlock('speed_l1_45');
@@ -1237,8 +1322,83 @@ export class GameManager {
     if (this.level >= 5 && this.statsManager.currentGameTime < 600) {
       this.achievements.unlock('speed_5levels_10min');
     }
+    if (this.level >= 10 && this.statsManager.currentGameTime < 1200) {
+      this.achievements.unlock('speed_10levels_20min');
+    }
 
     if (this.lives === 1) this.achievements.unlock('comeback');
+  }
+
+  // ---- Ghost House Bobbing ----
+  private updateGhostHouseBob(delta: number): void {
+    this.ghostHouseBobTimer += delta * 3;
+    for (let i = 0; i < this.ghosts.length; i++) {
+      const ghost = this.ghosts[i];
+      if (ghost.mode === GhostMode.HOUSE) {
+        const bobOffset = Math.sin(this.ghostHouseBobTimer + i * 1.5) * CELL_SIZE * 0.15;
+        const basePos = gridToWorld(ghost.col, ghost.row);
+        ghost.mesh.position.y = basePos.y + 0.03 + bobOffset;
+      }
+    }
+  }
+
+  // ---- Dot Streak Combo ----
+  private advanceDotStreak(): void {
+    this.dotStreakCount++;
+    this.dotStreakTimer = this.DOT_STREAK_WINDOW;
+
+    let newMult = 1;
+    for (let i = this.DOT_STREAK_THRESHOLDS.length - 1; i >= 0; i--) {
+      if (this.dotStreakCount >= this.DOT_STREAK_THRESHOLDS[i]) {
+        newMult = i + 2; // 2x, 3x, 4x, 5x
+        break;
+      }
+    }
+    if (newMult !== this.dotStreakMultiplier) {
+      this.dotStreakMultiplier = newMult;
+      this.onStreakChange?.(this.dotStreakMultiplier, this.dotStreakCount);
+      // Achievement checks
+      if (this.dotStreakMultiplier >= 2) this.achievements.unlock('streak_2x');
+      if (this.dotStreakMultiplier >= 3) this.achievements.unlock('streak_3x');
+      if (this.dotStreakMultiplier >= 4) this.achievements.unlock('streak_4x');
+      if (this.dotStreakMultiplier >= 5) this.achievements.unlock('streak_5x');
+    }
+  }
+
+  private resetDotStreak(): void {
+    if (this.dotStreakMultiplier > 1) {
+      this.dotStreakMultiplier = 1;
+      this.dotStreakCount = 0;
+      this.onStreakChange?.(1, 0);
+    }
+    this.dotStreakCount = 0;
+  }
+
+  getDotStreakMultiplier(): number {
+    return this.dotStreakMultiplier;
+  }
+
+  getDotStreakCount(): number {
+    return this.dotStreakCount;
+  }
+
+  // ---- Siren Level ----
+  private updateSirenLevel(): void {
+    if (this.state !== GameState.PLAYING) return;
+    const remaining = this.dotGrid.totalDots - this.dotGrid.dotsEaten;
+    const pct = remaining / Math.max(1, this.dotGrid.totalDots);
+    let newLevel = 0;
+    if (pct < 0.15) newLevel = 3;
+    else if (pct < 0.35) newLevel = 2;
+    else if (pct < 0.60) newLevel = 1;
+    if (newLevel !== this.sirenLevel) {
+      this.sirenLevel = newLevel;
+      this.onSirenChange?.(newLevel);
+    }
+  }
+
+  getSirenLevel(): number {
+    return this.sirenLevel;
   }
 
   private endGame(): void {

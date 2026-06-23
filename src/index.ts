@@ -217,8 +217,22 @@ async function main(): Promise<void> {
     origOnStateChange?.(state);
     if (state === 'playing' || state === 'ready') {
       game.audio.startAmbient();
+      game.audio.startSiren(0);
     } else if (state === 'menu' || state === 'gameover') {
       game.audio.stopAmbient();
+      game.audio.stopSiren();
+    }
+  };
+
+  // ---- Siren level change ----
+  game.onSirenChange = (level) => {
+    game.audio.updateSirenLevel(level);
+  };
+
+  // ---- Streak change ----
+  game.onStreakChange = (multiplier, _count) => {
+    if (multiplier > 1) {
+      game.audio.playStreakUp(multiplier);
     }
   };
 

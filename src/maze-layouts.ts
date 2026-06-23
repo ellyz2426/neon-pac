@@ -1,4 +1,4 @@
-// === Neon Pac VR -- Multiple Maze Layouts ===
+// === Neon Pac VR -- Multiple Maze Layouts (v5: 6 layouts) ===
 
 // Layout key: # = wall, . = dot, o = power pellet, ' ' = empty/tunnel, G = ghost house
 
@@ -106,10 +106,62 @@ export const MAZE_SPIRAL = [
   '#####################',
 ];
 
-export const ALL_MAZES = [MAZE_CLASSIC, MAZE_CORRIDORS, MAZE_ARENA, MAZE_SPIRAL];
-export const MAZE_NAMES = ['Classic', 'Corridors', 'Arena', 'Spiral'];
+// Maze 5: "The Labyrinth" — tight winding passages, many dead-end-feeling turns
+export const MAZE_LABYRINTH = [
+  '#####################',
+  '#o.......#.......#o#',
+  '#.#####..#..####.#.#',
+  '#.#...#..#..#..#...#',
+  '#...#.#.....#..#.#.#',
+  '#.###.####.##..#.#.#',
+  '#.........#....#...#',
+  '#.###.#.#.#.##.###.#',
+  '   .#.#.#...#....#   ',
+  '####.#.##GGG##.#.####',
+  '    ...#GGGGG#...    ',
+  '####.#.##GGG##.#.####',
+  '   .#....#...#.#.#   ',
+  '#.###.##.#.#.#.###.#',
+  '#...#....#.........#',
+  '#.#.#..##.####.###.#',
+  '#o#.#..#.....#...#o#',
+  '#...#..#..#..#.#...#',
+  '#.#.####..#..#####.#',
+  '#.#.......#.......#',
+  '#o.................o#',
+  '#####################',
+];
 
-// Get maze for a given level (cycles through all 4)
+// Maze 6: "The Fortress" — thick wall clusters, defensive positions
+export const MAZE_FORTRESS = [
+  '#####################',
+  '#o.................o#',
+  '#.####.##.##.####.#.#',
+  '#......#...#......#.#',
+  '#.##.#.#.#.#.#.##...#',
+  '#.##.#...#...#.##.#.#',
+  '#....#.#####.#....#.#',
+  '#.##.#.......#.##...#',
+  '   ..#.#...#.#.#.#   ',
+  '####.#.##GGG##.#.####',
+  '    ...#GGGGG#...    ',
+  '####.#.##GGG##.#.####',
+  '   .#.#...#.#..#.#   ',
+  '#...##.......##.##.#',
+  '#.#....#####....#..#',
+  '#.#.#...#...#.#.##.#',
+  '#o..#.#.#.#.#.#...o#',
+  '#.#.#.#...#...####.#',
+  '#.#...##.##.#......#',
+  '#.####.#...#.####..#',
+  '#o.................o#',
+  '#####################',
+];
+
+export const ALL_MAZES = [MAZE_CLASSIC, MAZE_CORRIDORS, MAZE_ARENA, MAZE_SPIRAL, MAZE_LABYRINTH, MAZE_FORTRESS];
+export const MAZE_NAMES = ['Classic', 'Corridors', 'Arena', 'Spiral', 'Labyrinth', 'Fortress'];
+
+// Get maze for a given level (cycles through all 6)
 export function getMazeForLevel(level: number): string[] {
   const index = (level - 1) % ALL_MAZES.length;
   return ALL_MAZES[index];

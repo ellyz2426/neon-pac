@@ -719,9 +719,10 @@ export class UISystem extends createSystem({
         const secs = Math.ceil(frightRemaining);
         frightTimerEl?.setProperties({ text: `${secs}s` });
 
-        // Color: blue normally, red when < 2s
+        // Color: blue normally, red when < 2s (flash warning)
         if (frightRemaining < 2) {
-          frightTimerEl?.setProperties({ text: `${secs}s`, color: '#ff4444' });
+          const flashColor = this.game.frightFlashWhite ? '#ffffff' : '#ff4444';
+          frightTimerEl?.setProperties({ text: `${secs}s`, color: flashColor });
         } else {
           frightTimerEl?.setProperties({ text: `${secs}s`, color: '#4466ff' });
         }
@@ -732,6 +733,15 @@ export class UISystem extends createSystem({
       } else {
         frightTimerEl?.setProperties({ text: ' ' });
         frightBarEl?.setProperties({ width: 0 });
+      }
+
+      // Streak display
+      const streakMult = this.game.getDotStreakMultiplier();
+      const streakEl = this.hudDoc.getElementById('streak-label') as UIKit.Text | undefined;
+      if (streakMult > 1) {
+        streakEl?.setProperties({ text: `${streakMult}x STREAK` });
+      } else {
+        streakEl?.setProperties({ text: ' ' });
       }
     }
   }

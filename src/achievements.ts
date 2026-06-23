@@ -166,6 +166,44 @@ const ACHIEVEMENT_DEFS: Omit<Achievement, 'unlocked' | 'unlockedAt'>[] = [
   { id: 'total_time_1h', title: 'Time Investor', description: 'Play for 1 hour total', icon: '[1H]', category: AchievementCategory.MASTERY },
   { id: 'total_time_5h', title: 'Time Lord', description: 'Play for 5 hours total', icon: '[5H]', category: AchievementCategory.MASTERY },
   { id: 'extra_life_3', title: 'Life Collector', description: 'Earn 3 extra lives in one game', icon: '[3U]', category: AchievementCategory.SCORE },
+
+  // ---- Round 5 additions ----
+
+  // Streak achievements
+  { id: 'streak_2x', title: 'Streak Starter', description: 'Reach a 2x dot streak', icon: '[S2]', category: AchievementCategory.SKILL },
+  { id: 'streak_3x', title: 'Combo King', description: 'Reach a 3x dot streak', icon: '[S3]', category: AchievementCategory.SKILL },
+  { id: 'streak_4x', title: 'Streak Master', description: 'Reach a 4x dot streak', icon: '[S4]', category: AchievementCategory.SKILL },
+  { id: 'streak_5x', title: 'Unstoppable Streak', description: 'Reach the max 5x dot streak', icon: '[S5]', category: AchievementCategory.SKILL },
+
+  // New maze achievements
+  { id: 'maze_labyrinth', title: 'Lost & Found', description: 'Play the Labyrinth maze', icon: '[LB]', category: AchievementCategory.LEVEL },
+  { id: 'maze_fortress', title: 'Siege Breaker', description: 'Play the Fortress maze', icon: '[FT]', category: AchievementCategory.LEVEL },
+  { id: 'all_6_mazes', title: 'Cartographer', description: 'Play all 6 maze layouts', icon: '[6M]', category: AchievementCategory.MASTERY },
+
+  // Ghost mastery
+  { id: 'fright_flash_eat', title: 'Last Second', description: 'Eat a ghost during the fright flash warning', icon: '[LS]', category: AchievementCategory.GHOST },
+  { id: 'ghost_1000total', title: 'Ghost Extinction', description: 'Eat 1,000 ghosts total', icon: '[1KG]', category: AchievementCategory.GHOST },
+
+  // Score milestones
+  { id: 'score_1m', title: 'Millionaire', description: 'Score 1,000,000 points', icon: '[1M]', category: AchievementCategory.SCORE },
+
+  // Level milestones
+  { id: 'level_75', title: 'Pac Legend', description: 'Reach level 75', icon: '[L75]', category: AchievementCategory.LEVEL },
+  { id: 'level_100', title: 'Century Runner', description: 'Reach level 100', icon: '[100]', category: AchievementCategory.LEVEL },
+
+  // Mode mastery
+  { id: 'zen_l10', title: 'Zen Master', description: 'Reach level 10 in Zen mode', icon: '[ZM]', category: AchievementCategory.MASTERY },
+  { id: 'dark_l10', title: 'Night Owl', description: 'Reach level 10 in Dark mode', icon: '[NO]', category: AchievementCategory.MASTERY },
+  { id: 'survival_l10', title: 'Iron Survivor', description: 'Reach level 10 in Survival mode', icon: '[IS]', category: AchievementCategory.SURVIVAL },
+
+  // Speed achievements
+  { id: 'speed_clear_20', title: 'Sonic Clear', description: 'Clear a level in under 20 seconds', icon: '[S20]', category: AchievementCategory.SPEED },
+  { id: 'speed_10levels_20min', title: 'Turbo Marathon', description: 'Clear 10 levels in under 20 min', icon: '[TM]', category: AchievementCategory.SPEED },
+
+  // Endurance
+  { id: 'total_time_10h', title: 'Pac Lifer', description: 'Play for 10 hours total', icon: '[10H]', category: AchievementCategory.MASTERY },
+  { id: 'games_250', title: 'Veteran', description: 'Play 250 games', icon: '[250]', category: AchievementCategory.SURVIVAL },
+  { id: 'dots_50000', title: 'Dot Singularity', description: 'Eat 50,000 dots total', icon: '[50K]', category: AchievementCategory.MASTERY },
 ];
 
 const STORAGE_KEY = 'neon-pac-achievements';
